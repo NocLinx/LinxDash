@@ -154,7 +154,7 @@ public partial class _SaasDetalhes: System.Web.UI.Page
             // ###########################################//
 
             inputext.ToolTip = alerta;
-            DisplayText.Text = SelectComand(e.Row.Cells[13].Text.ToString(), monitor, nomeDevice);
+            DisplayText.Text = SelectComand(e.Row.Cells[13].Text.ToString(), monitor, nomeDevice, "2");
             StatusTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "Status");
             DataCadastroTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "DataCadastro");
             DataCadastroTP.ToolTip = "Data em que a TP foi aberta no sistema (Visual Linx / WorkFlow Web)";
@@ -189,6 +189,11 @@ public partial class _SaasDetalhes: System.Web.UI.Page
             {
                 mostraTP.ToolTip = "NÃO INICIADO";
 
+            }
+            else if (StatusTP.Text == "AGUARDANDO / PENDENTE                   ")
+            {
+                //mostraTP.ForeColor = System.Drawing.Color.DarkOrange;
+                mostraTP.ToolTip = " AGUARDANDO / PENDENTE";
             }
             /*
              * Tratando erros da tela 
@@ -279,20 +284,39 @@ public partial class _SaasDetalhes: System.Web.UI.Page
         LinxDashNoc.Insert();
         GridView1.DataBind();
     }
-    protected string SelectComand(string DataAlerta, string Monitor, string NomeDevice)
+    protected string SelectComand(string DataAlerta, string Monitor, string NomeDevice, string diferençaHora)
     {
         string resultado;
-        string comando = "SELECT top 1 nTP from TP where  DataAlerta = '" + DataAlerta + "' AND Monitor = '" + Monitor + "'  AND nomeDevice = '" + NomeDevice + "' order by Duração desc";
+        string comando = "set dateformat dmy " +
+                         "SELECT top 1 nTP from TP where  DataAlerta = '" + DataAlerta + "' AND Monitor = '" + Monitor + "' " +
+                         "AND nomeDevice = '" + NomeDevice + "' " +
+                         "order by Duração desc";
         LinxDashNoc.SelectCommand = comando;
         DataView test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
         int record = test.Count;
         if (record != 0)
         {
-            resultado =  test[0][0].ToString();
+            resultado = test[0][0].ToString();
 
         }
         else
-            resultado = "Insira a TP";
+        {
+            comando = "set dateformat dmy " +
+            "SELECT top 1 nTP from TP where  datediff(hh, Data ,GETDATE()) < '" + diferençaHora + "' " +
+            "AND Monitor = '" + Monitor + "' " +
+            "AND nomeDevice = '" + NomeDevice + "' " +
+            "order by Duração desc";
+            LinxDashNoc.SelectCommand = comando;
+            test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
+            record = test.Count;
+            if (record != 0)
+            {
+                resultado = test[0][0].ToString();
+            }
+            else
+                resultado = "Novo";
+        }
+
 
         return resultado;
     }
