@@ -1,0 +1,486 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Data;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+using System.Collections;
+/*
+ 
+    Desenvolvido por:
+
+ ▓██   ██▓ █    ██  ██▀███   ██▓     █████▒▄▄▄       ██▀███   ██▓ ▄▄▄        ██████ 
+ ▒██  ██▒ ██  ▓██▒▓██ ▒ ██▒▓██▒   ▓██   ▒▒████▄    ▓██ ▒ ██▒▓██▒▒████▄    ▒██    ▒ 
+  ▒██ ██░▓██  ▒██░▓██ ░▄█ ▒▒██▒   ▒████ ░▒██  ▀█▄  ▓██ ░▄█ ▒▒██▒▒██  ▀█▄  ░ ▓██▄   
+  ░ ▐██▓░▓▓█  ░██░▒██▀▀█▄  ░██░   ░▓█▒  ░░██▄▄▄▄██ ▒██▀▀█▄  ░██░░██▄▄▄▄██   ▒   ██▒
+  ░ ██▒▓░▒▒█████▓ ░██▓ ▒██▒░██░   ░▒█░    ▓█   ▓██▒░██▓ ▒██▒░██░ ▓█   ▓██▒▒██████▒▒
+   ██▒▒▒ ░▒▓▒ ▒ ▒ ░ ▒▓ ░▒▓░░▓      ▒ ░    ▒▒   ▓▒█░░ ▒▓ ░▒▓░░▓   ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░
+ ▓██ ░▒░ ░░▒░ ░ ░   ░▒ ░ ▒░ ▒ ░    ░       ▒   ▒▒ ░  ░▒ ░ ▒░ ▒ ░  ▒   ▒▒ ░░ ░▒  ░ ░
+ ▒ ▒ ░░   ░░░ ░ ░   ░░   ░  ▒ ░    ░ ░     ░   ▒     ░░   ░  ▒ ░  ░   ▒   ░  ░  ░  
+ ░ ░        ░        ░      ░                  ░  ░   ░      ░        ░  ░      ░  
+ ░ ░                                                                               
+ 
+ Maio / 2015 
+ Yuri Farias
+ yuri.root@gmail.com
+ relampagomagico.com.br
+
+ 
+ */
+public partial class CyberDetalhes : System.Web.UI.Page
+{
+
+
+    public static Hashtable hashtableNomeDevice;
+    public static Hashtable hashTableDataAlerta;
+    public static Hashtable hashTableMonitor;
+    public static Hashtable hashTableDuração;
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+
+            try
+            {
+
+                GridView1.DataBind();
+            }
+            catch (System.Data.SqlClient.SqlException ex) //Catch SqlException
+            {
+                Response.Write(ex.Message + "Testando WPP");
+            }
+            catch(Exception ex) //Catch Other Exception
+            {
+                Response.Write(ex.Message + "Testando WPP");
+            }
+ 
+        }
+    }
+    protected void Timer1_Tick(object sender, EventArgs e)
+    {
+        try
+        {
+
+            GridView1.DataBind();
+        }
+        catch (System.Data.SqlClient.SqlException ex) //Catch SqlException
+        {
+            Response.Write(ex.Message + "Testando WPP");
+        }
+        catch (Exception ex) //Catch Other Exception
+        {
+            Response.Write(ex.Message + "Testando WPP");
+        }
+
+    }
+
+    protected void Manipula(Object sender, GridViewRowEventArgs e)
+    {
+        if (GridView1.Rows.Count == 0)
+        {
+            hashtableNomeDevice = new Hashtable();
+            hashTableDataAlerta = new Hashtable();
+            hashTableMonitor = new Hashtable();
+            hashTableDuração = new Hashtable();
+
+        }
+        System.Drawing.Color OrangeRed = System.Drawing.ColorTranslator.FromHtml("#FF4500");
+        System.Drawing.Color Amarelo = System.Drawing.ColorTranslator.FromHtml("#FFFF99");
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            if ((int.Parse(e.Row.Cells[11].Text) >= 0))
+            {
+                e.Row.Cells[11].BackColor = Amarelo;
+                e.Row.Cells[11].ForeColor = System.Drawing.Color.Black;
+            }
+            if ((int.Parse(e.Row.Cells[11].Text) == 4))
+            {
+                e.Row.Cells[11].BackColor = System.Drawing.Color.Orange;
+            }
+            if ((int.Parse(e.Row.Cells[11].Text) >= 5))
+            {
+                e.Row.Cells[11].BackColor = System.Drawing.Color.Red;
+                e.Row.Cells[11].ForeColor = System.Drawing.Color.White;
+            }
+            if ((int.Parse(e.Row.Cells[11].Text) >= 15))
+            {
+                e.Row.Cells[11].BackColor = System.Drawing.Color.CadetBlue;
+            }
+
+            if ((int.Parse(e.Row.Cells[11].Text) >= 30))
+            {
+                e.Row.Cells[11].BackColor = System.Drawing.Color.Black;
+            }
+
+            // Tempo humano do alerta
+            TimeSpan df = (DateTime.Now - Convert.ToDateTime(e.Row.Cells[13].Text));
+
+
+            if (df.TotalMilliseconds > 1)
+                e.Row.Cells[12].Text = Convert.ToString(Math.Round(df.TotalSeconds)) + " segundos";
+            if (df.TotalSeconds > 60)
+                e.Row.Cells[12].Text = Convert.ToString(Math.Round(df.TotalMinutes)) + " minutos";
+            if (df.TotalMinutes > 60)
+                e.Row.Cells[12].Text = Convert.ToString(Math.Round(df.TotalHours)) + " horas";
+            if (df.TotalHours > 24)
+                e.Row.Cells[12].Text = Convert.ToString(Math.Round(df.TotalDays)) + " dias";
+
+            // Altera resultado das prioridades
+
+            if (e.Row.Cells[1].Text.Contains("1"))
+            {
+                e.Row.Cells[1].Style.Add("background-Image", "url('img/red.png')");
+                e.Row.Cells[1].Style.Add("background-position", "center");
+                e.Row.Cells[1].Attributes.Add("title", "Prioridade Alta!");
+
+            }
+            if (e.Row.Cells[1].Text.Contains("2"))
+            {
+                e.Row.Cells[1].Style.Add("background-Image", "url('img/yellow.png')");
+                e.Row.Cells[1].Style.Add("background-position", "center");
+                e.Row.Cells[1].Attributes.Add("title", "Prioridade Normal");
+            }
+
+            e.Row.Cells[1].Style.Add("background-repeat", "no-repeat");
+            e.Row.Cells[1].Text = "";
+            e.Row.Cells[1].Attributes.Add("align", "center");
+
+            // ###########################################//
+
+            System.Web.UI.WebControls.TextBox inputext = (System.Web.UI.WebControls.TextBox)e.Row.FindControl("TextBox1");
+            System.Web.UI.WebControls.Label DisplayText = (System.Web.UI.WebControls.Label)e.Row.FindControl("Label1");
+            System.Web.UI.WebControls.Label StatusTP = (System.Web.UI.WebControls.Label)e.Row.FindControl("Label2");
+            System.Web.UI.WebControls.Label DataCadastroTP = (System.Web.UI.WebControls.Label)e.Row.FindControl("Label3");
+            System.Web.UI.WebControls.Label DiasTP = (System.Web.UI.WebControls.Label)e.Row.FindControl("Label4");
+            System.Web.UI.WebControls.Label ProdutoFootPrint = (System.Web.UI.WebControls.Label)e.Row.FindControl("Label5");
+            System.Web.UI.WebControls.Label Recurso = (System.Web.UI.WebControls.Label)e.Row.FindControl("Recurso");
+            System.Web.UI.WebControls.Label MensagemText = (System.Web.UI.WebControls.Label)e.Row.FindControl("Mensagem");
+            System.Web.UI.WebControls.Label mostraTP = (System.Web.UI.WebControls.Label)e.Row.FindControl("ExibiTP");
+            // ###########################################//
+
+            string alerta = e.Row.Cells[16].Text.ToString();
+            string nomeDevice = e.Row.Cells[4].Text.ToString();
+            string monitor = e.Row.Cells[9].Text.ToString();
+            string DlastTime = e.Row.Cells[11].Text.ToString();
+            DateTime dataAlerta = Convert.ToDateTime(e.Row.Cells[13].Text);
+
+            // ###########################################//
+            hashtableNomeDevice.Add(alerta, nomeDevice);
+            hashTableDataAlerta.Add(alerta, dataAlerta);
+            hashTableMonitor.Add(alerta, monitor);
+            hashTableDuração.Add(alerta, DlastTime);
+            // ###########################################//
+
+            inputext.ToolTip = alerta;
+            DisplayText.Text = SelectComand(e.Row.Cells[13].Text.ToString(), monitor, nomeDevice);
+            DisplayText.ToolTip = "Tarefa programada, pode ser aberta tanto via Visual Linx como Linx WorkFlow Web";
+            StatusTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "Status");
+            StatusTP.ToolTip = "Toda vez que a pagina atualiza o Status da TP é atualizado também";
+            DataCadastroTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "DataCadastro");
+            DataCadastroTP.ToolTip = "Data em que a TP foi aberta no sistema (Visual Linx / WorkFlow Web)";
+            DiasTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "DiasTP");
+            DiasTP.ToolTip = "Total em dias que a TP foi aberta";
+            ProdutoFootPrint.Text =   e.Row.Cells[16].Text.ToString();
+            ProdutoFootPrint.ToolTip = "Produto_FootPrint";
+            Recurso.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "ContatoRecurso");
+            mostraTP.Text = DisplayText.Text;
+
+            // ###########################################//
+            /*
+             * Colori TP depedendo de Status 
+             */
+            if (StatusTP.Text == "CANCELADO/REPROVADA                     ") // Jupiter retorna info com espaço
+            {
+                //mostraTP.ForeColor = System.Drawing.Color.IndianRed;
+                mostraTP.ToolTip = "CANCELADO/REPROVADA";
+            }
+            else if (StatusTP.Text == "EM ANDAMENTO / EM PROGRESSO             ")
+            {
+                //mostraTP.ForeColor = System.Drawing.Color.DarkGreen;
+                mostraTP.ToolTip = "EM ANDAMENTO / EM PROGRESSO";
+            }
+            else if (StatusTP.Text == "RESOLVIDO / FINALIZADO                  ")
+            {
+                //mostraTP.ForeColor = System.Drawing.Color.DarkOrange;
+                mostraTP.ToolTip = "RESOLVIDO / FINALIZADO";
+            }
+            else if (StatusTP.Text == "NÃO INICIADO                            ")
+            {
+                mostraTP.ToolTip = "NÃO INICIADO";
+
+            }
+            // ###########################################//
+            //Tratando erros da tela 
+
+            string input = e.Row.Cells[15].Text;
+            int index = input.LastIndexOf("&#39;&#39; which does NOT");
+            if (index > 0)
+                input = input.Substring(0, index); // Apaga tudo depois do ultimo index
+
+            int index2 = input.LastIndexOf("Failure occurred for the following record:");
+            if (index2 > 0)
+                input = input.Substring(0, index2);// Apaga tudo depois do ultimo index
+
+            int index3 = input.LastIndexOf("which does NOT &#39;contains&#39");
+            if (index3 > 0)
+                input = input.Substring(0, index3);// Apaga tudo depois do ultimo index
+            MensagemText.Text = input;
+
+            // ###########################################//
+            // apaga coluna alerta 
+
+            e.Row.Cells[15].Visible = false;
+            e.Row.Cells[16].Visible = false;
+            e.Row.Cells[17].Visible = false;
+            GridView1.Columns[15].HeaderText = " ";
+            GridView1.Columns[16].HeaderText = " ";
+            GridView1.Columns[17].HeaderText = "";
+            e.Row.Cells[15].CssClass = "ocultar";
+            e.Row.Cells[16].CssClass = "ocultar";
+            e.Row.Cells[17].CssClass = "ocultar";
+            // ###########################################//
+ 
+
+
+
+        }
+
+    }
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+
+        GridView1.DataBind();
+    }
+    protected void Button2_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("Default.aspx");
+    }
+
+
+    protected void TextBox1_TextChanged(object sender, EventArgs e)
+    {
+        System.Web.UI.WebControls.TextBox objTextBox = (System.Web.UI.WebControls.TextBox)sender;
+
+        string comando =
+          "IF NOT EXISTS (Select * FROM TP WHERE (Alerta = '" + objTextBox.ToolTip.ToString() + "')) " +
+          "BEGIN " +
+           "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Data) VALUES ( " +
+            " '" + objTextBox.Text.ToString() + "', " +
+            " '" + objTextBox.ToolTip.ToString() + "', " +
+            " '" + hashtableNomeDevice[objTextBox.ToolTip.ToString()] + "', " +
+            " '" + hashTableDataAlerta[objTextBox.ToolTip] + "', " +
+            " '" + HttpContext.Current.Request.UserAgent + "', " +
+            " '" + System.Web.HttpContext.Current.Request.UserHostAddress + "', " +
+            " '" + System.Web.HttpContext.Current.Request.UserHostName + "', " +
+            " '" + HttpContext.Current.Request.LogonUserIdentity.Name + "', " +
+            " '" + hashTableMonitor[objTextBox.ToolTip.ToString()] + "', " +
+            " '" + hashTableDuração[objTextBox.ToolTip.ToString()] + "', " +
+            " '" + recuperaInfoJupiter(objTextBox.Text.ToString(), "Status").Replace("Status: ", "") + "'," +
+            " '" + DateTime.Now + "')" +
+            "END " +
+            "ELSE " +
+            "BEGIN " +
+            " UPDATE TP set nTP = '" + objTextBox.Text.ToString() + "', " +
+            " Status = '" + recuperaInfoJupiter(objTextBox.Text.ToString(), "Status").Replace("Status: ", "") + "', " +
+           " Data = '" + DateTime.Now + "' " +
+            "WHERE (Alerta = '" + objTextBox.ToolTip.ToString() + "' AND DataAlerta = '" + hashTableDataAlerta[objTextBox.ToolTip] + "' ) END";
+
+        LinxDashNoc.InsertCommand = comando;
+        LinxDashNoc.Insert();
+        GridView1.DataBind();
+    }
+    protected string SelectComand(string DataAlerta, string Monitor, string NomeDevice)
+    {
+        string resultado;
+        string comando = "SELECT top 1 nTP from TP where  DataAlerta = '" + DataAlerta + "' AND Monitor = '" + Monitor + "'  AND nomeDevice = '" + NomeDevice + "' order by Duração desc";
+        LinxDashNoc.SelectCommand = comando;
+        DataView test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
+        int record = test.Count;
+        if (record != 0)
+        {
+            resultado = test[0][0].ToString();
+
+        }
+        else
+            resultado = "Insira a TP abaixo";
+
+        return resultado;
+    }
+    protected string recuperaInfoJupiter(string tp, string tipo)
+    {
+            string resultado = " ";
+            int nTP;
+            string comando;
+
+            if (tipo == "Status")
+            {
+                if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
+                {
+                    comando = "SELECT  DESC_STATUS_TAREFA " +
+                                    "FROM   W_CRM_TAREFA_PROGRAMADA " +
+                                    "WHERE  PORC_CONCLUIDA like '%' " +
+                                    "AND OBJETO_ID = '" + nTP.ToString() + "' ";
+
+                    Jupiter.SelectCommand = comando;
+                    DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
+                    int retorno = jupiterina.Count;
+                    if (retorno != 0)
+                        resultado =   jupiterina[0][0].ToString();
+                    else
+                        resultado = "Indefinido";
+                }
+
+            }
+            else if (tipo == "DataCadastro")
+        {
+            if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
+            {
+                comando = "SELECT  DATA_CADASTRO " +
+                                "FROM   W_CRM_TAREFA_PROGRAMADA " +
+                                "WHERE  PORC_CONCLUIDA like '%' " +
+                                "AND OBJETO_ID = '" + nTP.ToString() + "' ";
+
+                Jupiter.SelectCommand = comando;
+                DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
+                int retorno = jupiterina.Count;
+                if (retorno != 0)
+                    resultado = jupiterina[0][0].ToString() ;
+                else
+                    resultado = "Indefinido";
+            }
+        }
+
+            else if (tipo == "ContatoRecurso")
+            {
+                if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
+                {
+                    comando = "SELECT  NOME_CONTATO_RECURSO " +
+                                    "FROM   W_CRM_TAREFA_PROGRAMADA " +
+                                    "WHERE  PORC_CONCLUIDA like '%' " +
+                                    "AND OBJETO_ID = '" + nTP.ToString() + "' ";
+
+                    Jupiter.SelectCommand = comando;
+                    DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
+                    int retorno = jupiterina.Count;
+                    if (retorno != 0)
+                        resultado = jupiterina[0][0].ToString();
+                    else
+                        resultado = "Indefinido";
+                }
+            }
+
+        else if(tipo == "DiasTP")
+        {
+             if(int.TryParse(tp.Replace("TP: ",""), out nTP))
+            {
+                comando = "SELECT  Datediff(day, DATA_CADASTRO, getdate())  " +
+                                "AS DIAS_TP " +
+                                "FROM   W_CRM_TAREFA_PROGRAMADA " +
+                                "WHERE  PORC_CONCLUIDA like '%' " +
+                                "AND OBJETO_ID = '" + nTP.ToString() + "' ";
+
+                Jupiter.SelectCommand = comando;
+                DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
+                int retorno = jupiterina.Count;
+                if (retorno != 0)
+                    resultado = jupiterina[0][0].ToString();                        
+                else
+                    resultado = "Indefinido";
+             }
+        }
+
+        return resultado;
+    }
+    protected string recuperaFootPrint(string tp, string tipo)
+    {
+        string resultado = " ";
+        int nTP;
+        string comando;
+
+        if (tipo == "Vertical")
+        {
+            if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
+            {
+                comando = "SELECT  DESC_STATUS_TAREFA " +
+                                "FROM   W_CRM_TAREFA_PROGRAMADA " +
+                                "WHERE  PORC_CONCLUIDA like '%' " +
+                                "AND OBJETO_ID = '" + nTP.ToString() + "' ";
+
+                Cyber.SelectCommand = comando;
+                DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
+                int retorno = jupiterina.Count;
+                if (retorno != 0)
+                    resultado = jupiterina[0][0].ToString();
+                else
+                    resultado = "Indefinido";
+            }
+
+        }
+        else if (tipo == "Produto")
+        {
+            if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
+            {
+                comando = "SELECT  DATA_CADASTRO " +
+                                "FROM   W_CRM_TAREFA_PROGRAMADA " +
+                                "WHERE  PORC_CONCLUIDA like '%' " +
+                                "AND OBJETO_ID = '" + nTP.ToString() + "' ";
+
+                Jupiter.SelectCommand = comando;
+                DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
+                int retorno = jupiterina.Count;
+                if (retorno != 0)
+                    resultado = jupiterina[0][0].ToString();
+                else
+                    resultado = "Indefinido";
+            }
+        }
+       
+
+        return resultado;
+    }
+    protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void alterarRefresh(object sender, EventArgs e)
+    {
+        if (alterarRefreshuser.SelectedIndex == 0)
+        {
+            Timer1.Enabled = false;
+        }
+        else
+        {
+            if (alterarRefreshuser.SelectedIndex == 1)
+            {
+                Timer1.Enabled = true;
+
+                Timer1.Interval = 60000;
+            }
+            if (alterarRefreshuser.SelectedIndex == 2)
+            {
+                Timer1.Enabled = true;
+
+                Timer1.Interval = 300000;
+            }
+            if (alterarRefreshuser.SelectedIndex == 3)
+            {
+                Timer1.Enabled = true;
+
+                Timer1.Interval = 600000;
+            }
+            if (alterarRefreshuser.SelectedIndex == 1)
+            {
+                Timer1.Enabled = true;
+
+                Timer1.Interval = 1800000;
+            }
+        }
+    }
+}
+
