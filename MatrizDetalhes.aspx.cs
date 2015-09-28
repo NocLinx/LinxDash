@@ -262,7 +262,7 @@ public partial class _MatrizDetalhes : System.Web.UI.Page
                          "SELECT top 1 nTP from TP where  DataAlerta = '" + DataAlerta + "' AND Monitor = '" + Monitor + "' "+
                          "AND nomeDevice = '" + NomeDevice + "' " +
                          "AND Coment = '" + Comentario + "' " +
-                         "order by DataAlerta desc";
+                         "order by DataAlerta, Data desc";
         LinxDashNoc.SelectCommand = comando;
         DataView test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
         int record = test.Count;
@@ -276,7 +276,7 @@ public partial class _MatrizDetalhes : System.Web.UI.Page
                               "SELECT top 1 Alerta from TP where  nomeDevice = '" + NomeDevice + "' " +
                               "AND Monitor = '"+ Monitor +"' "+
                               "AND Coment = '" + Comentario + "' " +
-                              "order by DataAlerta desc ";
+                              "order by DataAlerta, Data desc ";
             LinxDashNoc.SelectCommand = comando;
             test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
             record = test.Count;
@@ -295,7 +295,7 @@ public partial class _MatrizDetalhes : System.Web.UI.Page
                          "SELECT top 1 nTP from TP where  Alerta = '" + alertaAntigo + "' AND Monitor = '" + Monitor + "' " +
                          "AND nomeDevice = '" + NomeDevice + "' " +
                          "AND Coment = '" + Comentario + "' " +
-                         "order by DataAlerta desc";
+                         "order by DataAlerta, Data desc";
                            LinxDashNoc.SelectCommand = comando;
                            test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
                             record = test.Count;

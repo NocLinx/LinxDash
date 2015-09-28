@@ -658,7 +658,7 @@ ORDER BY dLastInternalStateTime DESC">
                     <asp:Label ID="Label2" runat="server" Enabled="false" Text=" "></asp:Label>
                 </td>   
                    <td valign="top" class="auto-style3">
-        <asp:GridView ID="GridPOA" runat="server"  OnRowDataBound="Manipula"  AutoGenerateColumns="False" CellPadding="4"  DataSourceID="POA" ForeColor="#333333" style="text-align:match-parent; margin-left: 0px;" BorderColor="Black" BorderWidth="2px" HorizontalAlign="Center" ShowHeaderWhenEmpty="True" Width="300px"  >
+        <asp:GridView ID="GridPOA" runat="server"  OnRowDataBound="Manipula"  AutoGenerateColumns="False" CellPadding="4"  DataSourceID="POA" ForeColor="#333333" style="text-align:match-parent; margin-left: 0px;" BorderColor="Black" BorderWidth="2px" HorizontalAlign="Center" ShowHeaderWhenEmpty="True" Width="325px"  >
             <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
             <Columns>
                 <asp:BoundField DataField="Prioridade" HeaderText="Pr" ReadOnly="True" SortExpression="Prioridade" />
