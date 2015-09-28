@@ -307,6 +307,25 @@ public partial class _SaasDetalhes: System.Web.UI.Page
                     if (record != 0)
                     {
                         resultado = test[0][0].ToString();
+                        comando = "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Coment, Data ) VALUES ( " +
+                                          " '" + resultado + "', " +
+                                          " '" + alerta + "', " +
+                                          " '" + hashtableNomeDevice[alerta] + "', " +
+                                          " '" + hashTableDataAlerta[alerta] + "', " +
+                                          " '" + HttpContext.Current.Request.UserAgent + "', " +
+                                          " '" + System.Web.HttpContext.Current.Request.UserHostAddress + "', " +
+                                          " '" + System.Web.HttpContext.Current.Request.UserHostName + "', " +
+                                          " '" + HttpContext.Current.Request.LogonUserIdentity.Name + "', " +
+                                          " '" + hashTableMonitor[alerta] + "', " +
+                                          " '" + hashTableDuração[alerta] + "', " +
+                                          " '" + recuperaInfoJupiter(alerta, "Status").Replace("Status: ", "") + "', " +
+                                          " '" + hashTableComment[alerta] + "'," +
+                                          " '" + DateTime.Now + "')";
+                        LinxDashNoc.InsertCommand = comando;
+                        LinxDashNoc.Insert();
+                        GridView1.DataBind();
+
+
                     }
 
                 }

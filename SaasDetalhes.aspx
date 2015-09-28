@@ -23,7 +23,7 @@
     -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>SaaS - Versão: 1.1.1</title>
+    <title>SaaS - Versão: 2.0.0</title>
     <script>
 
         function expandir(name) {
