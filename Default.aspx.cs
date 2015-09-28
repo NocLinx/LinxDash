@@ -91,6 +91,7 @@ public partial class _Default : System.Web.UI.Page
                 }
 
                 e.Row.Cells[0].Style.Add("background-repeat", "no-repeat");
+                e.Row.Cells[0].Style.Add("background-position", "center");
                 e.Row.Cells[0].Text = "";
                 e.Row.Cells[0].Attributes.Add("align", "center");
 
@@ -114,11 +115,12 @@ public partial class _Default : System.Web.UI.Page
     }
     protected void Button5_Click(object sender, EventArgs e)
     {
-        Response.Redirect("PoaDetalhes.aspx");
+        Response.Redirect("UberlandiaDetalhes.aspx");
+
     }
     protected void Button6_Click(object sender, EventArgs e)
     {
-        Response.Redirect("UberlandiaDetalhes.aspx");
+        Response.Redirect("PoaDetalhes.aspx");
     }
     protected void Matriz0_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
     {
@@ -387,6 +389,147 @@ public partial class _Default : System.Web.UI.Page
 "ORDER BY dLastInternalStateTime DESC";
             retorno = comando;
         }
+        else if (quem == 5)
+        {
+
+            String comando = "SELECT * " +
+                        "FROM ( " +
+                        "SELECT DISTINCT DeviceAttribute.sName, " +
+                        "DeviceAttribute.sValue, " +
+                        "DeviceAttribute.nDeviceID, " +
+                        "Device.sDisplayName, " +
+                        "NetworkInterface.sNetworkAddress, " +
+                        "DeviceGroup.sGroupName, " +
+                        "ActiveMonitorType.sMonitorTypeName, " +
+                        "PivotActiveMonitorTypeToDevice.sComment, " +
+                        "MonitorState.nInternalStateTime, " +
+                        "PivotActiveMonitorTypeToDevice.dLastInternalStateTime, " +
+                        "ActiveMonitorStateChangeLog.sResult, " +
+                        "MonitorState.nInternalMonitorState " +
+
+           "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK) " +
+                           "INNER JOIN PivotActiveMonitorTypeToDevice " +
+                           "ON ActiveMonitorStateChangeLog.nPivotActiveMonitorTypeToDeviceID = PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
+                           "INNER JOIN MonitorState WITH (NOLOCK) " +
+                           "ON PivotActiveMonitorTypeToDevice.nMonitorStateID = MonitorState.nMonitorStateID " +
+                           "INNER JOIN Device WITH (NOLOCK) " +
+                           "ON PivotActiveMonitorTypeToDevice.nDeviceID = Device.nDeviceID " +
+                           "INNER JOIN ActiveMonitorType WITH (NOLOCK) " +
+                           "ON PivotActiveMonitorTypeToDevice.nActiveMonitorTypeID = ActiveMonitorType.nActiveMonitorTypeID " +
+                           "INNER JOIN PivotDeviceToGroup WITH (NOLOCK) " +
+                           "ON Device.nDeviceID = PivotDeviceToGroup.nDeviceID " +
+                           "INNER JOIN DeviceGroup WITH (NOLOCK) " +
+                           "ON PivotDeviceToGroup.nDeviceGroupID = DeviceGroup.nDeviceGroupID " +
+                           "LEFT OUTER JOIN DeviceAttribute WITH (NOLOCK) " +
+                           "ON Device.nDeviceID = DeviceAttribute.nDeviceID " +
+                           "INNER JOIN NetworkInterface WITH (NOLOCK) " +
+                           "ON Device.nDeviceID = NetworkInterface.nDeviceID " +
+           "WHERE          	(ActiveMonitorStateChangeLog.dEndTime IS NULL) " +
+                           "AND (Device.bRemoved = 0) " +
+                           "AND (PivotActiveMonitorTypeToDevice.bRemoved = 0) " +
+                           "AND (PivotActiveMonitorTypeToDevice.bDisabled = 0) " +
+                           "AND (ActiveMonitorType.bRemoved = 0) " +
+                           "AND (ActiveMonitorType.bRemoved = 0) " +
+                           "AND (sGroupName NOT LIKE '%Discovery%') " +
+                           "AND (nInternalStateTime " + where + ") " +
+                           "AND (nInternalStateTime > 2) " +
+                           "AND (MonitorState.nInternalMonitorState = 1) " +
+                           "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID) " +
+
+                           "AND ( " +
+                                   "DeviceAttribute.sName = N'Prioridade' " +
+                                "OR DeviceAttribute.sName = N'Acionamento' " +
+
+                                "OR DeviceAttribute.sName = N'DC' " +
+                                "OR DeviceAttribute.sName = N'WUG' " +
+                                "OR DeviceAttribute.sName = N'Vertical' " +
+                                "OR DeviceAttribute.sName = N'Produto' " +
+                                "OR DeviceAttribute.sName = N'KBOPM' " +
+                                "OR DeviceAttribute.sName = N'KBOPP' " +
+                                "OR DeviceAttribute.sName = N'Excecao' " +
+                                "OR DeviceAttribute.sName = N'Filial' " +
+                                ") " +
+                           ") AS a " +
+
+           "PIVOT ( " +
+                   "max(sValue) " +
+                   "FOR sName IN ([Prioridade], [Acionamento], [DASH_Diretoria01], [DC], [WUG], [Vertical], [Produto], [KBOPM], [KBOPP], [Excecao], [Filial]) " +
+                 ") AS pvt " +
+           "ORDER BY sGroupName, dLastInternalStateTime, sDisplayName  DESC";
+
+            retorno = comando;
+        }
+        else if (quem == 6)
+        {
+
+            String comando = "SELECT * " +
+                        "FROM ( " +
+                        "SELECT DISTINCT DeviceAttribute.sName, " +
+                        "DeviceAttribute.sValue, " +
+                        "DeviceAttribute.nDeviceID, " +
+                        "Device.sDisplayName, " +
+                        "NetworkInterface.sNetworkAddress, " +
+                        "DeviceGroup.sGroupName, " +
+                        "ActiveMonitorType.sMonitorTypeName, " +
+                        "PivotActiveMonitorTypeToDevice.sComment, " +
+                        "MonitorState.nInternalStateTime, " +
+                        "PivotActiveMonitorTypeToDevice.dLastInternalStateTime, " +
+                        "ActiveMonitorStateChangeLog.sResult, " +
+                        "MonitorState.nInternalMonitorState " +
+
+           "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK) " +
+                           "INNER JOIN PivotActiveMonitorTypeToDevice " +
+                           "ON ActiveMonitorStateChangeLog.nPivotActiveMonitorTypeToDeviceID = PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
+                           "INNER JOIN MonitorState WITH (NOLOCK) " +
+                           "ON PivotActiveMonitorTypeToDevice.nMonitorStateID = MonitorState.nMonitorStateID " +
+                           "INNER JOIN Device WITH (NOLOCK) " +
+                           "ON PivotActiveMonitorTypeToDevice.nDeviceID = Device.nDeviceID " +
+                           "INNER JOIN ActiveMonitorType WITH (NOLOCK) " +
+                           "ON PivotActiveMonitorTypeToDevice.nActiveMonitorTypeID = ActiveMonitorType.nActiveMonitorTypeID " +
+                           "INNER JOIN PivotDeviceToGroup WITH (NOLOCK) " +
+                           "ON Device.nDeviceID = PivotDeviceToGroup.nDeviceID " +
+                           "INNER JOIN DeviceGroup WITH (NOLOCK) " +
+                           "ON PivotDeviceToGroup.nDeviceGroupID = DeviceGroup.nDeviceGroupID " +
+                           "LEFT OUTER JOIN DeviceAttribute WITH (NOLOCK) " +
+                           "ON Device.nDeviceID = DeviceAttribute.nDeviceID " +
+                           "INNER JOIN NetworkInterface WITH (NOLOCK) " +
+                           "ON Device.nDeviceID = NetworkInterface.nDeviceID " +
+           "WHERE          	(ActiveMonitorStateChangeLog.dEndTime IS NULL) " +
+                           "AND (Device.bRemoved = 0) " +
+                           "AND (PivotActiveMonitorTypeToDevice.bRemoved = 0) " +
+                           "AND (PivotActiveMonitorTypeToDevice.bDisabled = 0) " +
+                           "AND (ActiveMonitorType.bRemoved = 0) " +
+                           "AND (ActiveMonitorType.bRemoved = 0) " +
+                           "AND (sGroupName NOT LIKE '%Discovery%') " +
+                           "AND (sGroupName NOT LIKE '%Layer 2%' ) " + 
+				           "AND (sGroupName NOT LIKE '%Rangescan%') " +
+                           "AND (nInternalStateTime " + where + ") " +
+                           "AND (nInternalStateTime > 2) " +
+                           "AND (MonitorState.nInternalMonitorState = 1) " +
+                           "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID) " +
+
+                           "AND ( " +
+                                "DeviceAttribute.sName = N'Prioridade' " +
+                                "OR DeviceAttribute.sName = N'Acionamento' " +
+                                "OR DeviceAttribute.sName = N'DC' " +
+                                "OR DeviceAttribute.sName = N'WUG' " +
+                                "OR DeviceAttribute.sName = N'Vertical' " +
+                                "OR DeviceAttribute.sName = N'Produto' " +
+                                "OR DeviceAttribute.sName = N'KBOPM' " +
+                                "OR DeviceAttribute.sName = N'KBOPP' " +
+                                "OR DeviceAttribute.sName = N'Excecao' " +
+                                "OR DeviceAttribute.sName = N'Filial' " +
+                                ") " +
+                           ") AS a " +
+
+           "PIVOT ( " +
+                   "max(sValue) " +
+                   "FOR sName IN ([Prioridade], [Acionamento], [DASH_Diretoria01], [DC], [WUG], [Vertical], [Produto], [KBOPM], [KBOPP], [Excecao], [Filial]) " +
+                 ") AS pvt " +
+           "ORDER BY sGroupName, dLastInternalStateTime, sDisplayName  DESC";
+
+            retorno = comando;
+        }
 
         return retorno;
 
@@ -398,6 +541,9 @@ public partial class _Default : System.Web.UI.Page
         int SQLMatriz = 1;
         int SQLItaim = 3;
         int SQLCyber = 4;
+        int SQLUber = 5;
+        int SQLPoa = 6;
+
 
         if (setTimerByUser.SelectedItem.Value == "1 Hora")
         {
@@ -405,12 +551,17 @@ public partial class _Default : System.Web.UI.Page
             this.Matriz.SelectCommand = SelectCommand("< 119", SQLMatriz);
             this.Itaim.SelectCommand = SelectCommand("< 119", SQLItaim);
             this.Cyber.SelectCommand = SelectCommand("< 119", SQLCyber);
+            this.Uberlandia.SelectCommand = SelectCommand("< 119", SQLUber);
+            this.POA.SelectCommand = SelectCommand("< 119", SQLPoa);
+           
             try
             {
                 GridView1.DataBind();
                 GridView2.DataBind();
                 GridView3.DataBind();
                 GridView4.DataBind();
+                UberGrid.DataBind();
+                GridPOA.DataBind();
             }
             catch (System.Data.SqlClient.SqlException ex) //Detecta SqlException
             {
@@ -427,12 +578,17 @@ public partial class _Default : System.Web.UI.Page
             this.Matriz.SelectCommand = SelectCommand("< 179", SQLMatriz);
             this.Itaim.SelectCommand = SelectCommand("< 179", SQLItaim);
             this.Cyber.SelectCommand = SelectCommand("< 179", SQLCyber);
+            this.Uberlandia.SelectCommand = SelectCommand("< 179", SQLUber);
+            this.POA.SelectCommand = SelectCommand("< 179", SQLPoa);
             try
             {
                 GridView1.DataBind();
                 GridView2.DataBind();
                 GridView3.DataBind();
                 GridView4.DataBind();
+                UberGrid.DataBind();
+                GridPOA.DataBind();
+
             }
             catch (System.Data.SqlClient.SqlException ex) //Catch SqlException
             {
@@ -449,6 +605,9 @@ public partial class _Default : System.Web.UI.Page
             this.Matriz.SelectCommand = SelectCommand("< 239", SQLMatriz);
             this.Itaim.SelectCommand = SelectCommand("< 239", SQLItaim);
             this.Cyber.SelectCommand = SelectCommand("< 239", SQLCyber);
+            this.Uberlandia.SelectCommand = SelectCommand("< 239", SQLUber);
+            this.POA.SelectCommand = SelectCommand("< 239", SQLPoa);
+
 
             try
             {
@@ -456,6 +615,9 @@ public partial class _Default : System.Web.UI.Page
                 GridView2.DataBind();
                 GridView3.DataBind();
                 GridView4.DataBind();
+                UberGrid.DataBind();
+                GridPOA.DataBind();
+
             }
             catch (System.Data.SqlClient.SqlException ex) //Catch SqlException
             {
@@ -472,6 +634,9 @@ public partial class _Default : System.Web.UI.Page
             this.Matriz.SelectCommand = SelectCommand("< 299", SQLMatriz);
             this.Itaim.SelectCommand = SelectCommand("< 299", SQLItaim);
             this.Cyber.SelectCommand = SelectCommand("< 299", SQLCyber);
+            this.Uberlandia.SelectCommand = SelectCommand("< 299", SQLUber);
+            this.POA.SelectCommand = SelectCommand("< 299", SQLPoa);
+
 
             try
             {
@@ -479,6 +644,9 @@ public partial class _Default : System.Web.UI.Page
                 GridView2.DataBind();
                 GridView3.DataBind();
                 GridView4.DataBind();
+                UberGrid.DataBind();
+                GridPOA.DataBind();
+
             }
             catch (System.Data.SqlClient.SqlException ex) //Catch SqlException
             {
@@ -495,12 +663,18 @@ public partial class _Default : System.Web.UI.Page
             this.Matriz.SelectCommand = SelectCommand("> 0", SQLMatriz);
             this.Itaim.SelectCommand = SelectCommand("> 0", SQLItaim);
             this.Cyber.SelectCommand = SelectCommand("> 0", SQLCyber);
+            this.Uberlandia.SelectCommand =  SelectCommand("> 0", SQLUber);
+            this.POA.SelectCommand = SelectCommand("< 0", SQLPoa);
+
             try
             {
                 GridView1.DataBind();
                 GridView2.DataBind();
                 GridView3.DataBind();
                 GridView4.DataBind();
+                UberGrid.DataBind();
+                GridPOA.DataBind();
+
             }
             catch (System.Data.SqlClient.SqlException ex) //Catch SqlException
             {
@@ -518,7 +692,10 @@ public partial class _Default : System.Web.UI.Page
                 GridView1.DataBind();
                 GridView2.DataBind();
                 GridView3.DataBind();
-                GridView4.DataBind();              
+                GridView4.DataBind();        
+                UberGrid.DataBind();
+                GridPOA.DataBind();
+
             }
             catch (System.Data.SqlClient.SqlException ex) //Catch SqlException
             {

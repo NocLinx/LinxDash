@@ -39,6 +39,7 @@ public partial class CyberDetalhes : System.Web.UI.Page
     public static Hashtable hashTableDataAlerta;
     public static Hashtable hashTableMonitor;
     public static Hashtable hashTableDuração;
+    public static Hashtable hashTableComment;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -87,7 +88,7 @@ public partial class CyberDetalhes : System.Web.UI.Page
             hashTableDataAlerta = new Hashtable();
             hashTableMonitor = new Hashtable();
             hashTableDuração = new Hashtable();
-
+            hashTableComment = new Hashtable();
         }
         System.Drawing.Color OrangeRed = System.Drawing.ColorTranslator.FromHtml("#FF4500");
         System.Drawing.Color Amarelo = System.Drawing.ColorTranslator.FromHtml("#FFFF99");
@@ -167,6 +168,7 @@ public partial class CyberDetalhes : System.Web.UI.Page
             string nomeDevice = e.Row.Cells[4].Text.ToString();
             string monitor = e.Row.Cells[9].Text.ToString();
             string DlastTime = e.Row.Cells[11].Text.ToString();
+            string comment = e.Row.Cells[10].Text.ToString();
             DateTime dataAlerta = Convert.ToDateTime(e.Row.Cells[13].Text);
 
             // ###########################################//
@@ -174,10 +176,12 @@ public partial class CyberDetalhes : System.Web.UI.Page
             hashTableDataAlerta.Add(alerta, dataAlerta);
             hashTableMonitor.Add(alerta, monitor);
             hashTableDuração.Add(alerta, DlastTime);
+            hashTableComment.Add(alerta, comment);
+
             // ###########################################//
 
             inputext.ToolTip = alerta;
-            DisplayText.Text = SelectComand(e.Row.Cells[13].Text.ToString(), monitor, nomeDevice, "2");
+            DisplayText.Text = SelectComand(e.Row.Cells[13].Text.ToString(), monitor, nomeDevice, comment, "2", alerta); // Recupera TP passa diferença hora como ultimo paremetro
             DisplayText.ToolTip = "Tarefa programada, pode ser aberta tanto via Visual Linx como Linx WorkFlow Web";
             StatusTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "Status");
             StatusTP.ToolTip = "Toda vez que a pagina atualiza o Status da TP é atualizado também";
@@ -189,38 +193,9 @@ public partial class CyberDetalhes : System.Web.UI.Page
             ProdutoFootPrint.ToolTip = "Produto_FootPrint";
             Recurso.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "ContatoRecurso");
             mostraTP.Text = DisplayText.Text;
-
+            mostraTP.ToolTip = StatusTP.Text;
             // ###########################################//
-            /*
-             * Colori TP depedendo de Status 
-             */
-            if (StatusTP.Text == "CANCELADO/REPROVADA                     ") // Jupiter retorna info com espaço
-            {
-                //mostraTP.ForeColor = System.Drawing.Color.IndianRed;
-                mostraTP.ToolTip = "CANCELADO/REPROVADA";
-            }
-            else if (StatusTP.Text == "EM ANDAMENTO / EM PROGRESSO             ")
-            {
-                //mostraTP.ForeColor = System.Drawing.Color.DarkGreen;
-                mostraTP.ToolTip = "EM ANDAMENTO / EM PROGRESSO";
-            }
-            else if (StatusTP.Text == "RESOLVIDO / FINALIZADO                  ")
-            {
-                //mostraTP.ForeColor = System.Drawing.Color.DarkOrange;
-                mostraTP.ToolTip = "RESOLVIDO / FINALIZADO";
-            }
-            else if (StatusTP.Text == "AGUARDANDO / PENDENTE                   ")
-            {
-                //mostraTP.ForeColor = System.Drawing.Color.DarkOrange;
-                mostraTP.ToolTip = " AGUARDANDO / PENDENTE";
-            }
-            else if (StatusTP.Text == "NÃO INICIADO                            ")
-            {
-                mostraTP.ToolTip = "NÃO INICIADO";
-
-            }
-            // ###########################################//
-            //Tratando erros da tela 
+             //Tratando erros da tela 
 
             string input = e.Row.Cells[15].Text;
             int index = input.LastIndexOf("&#39;&#39; which does NOT");
@@ -275,7 +250,7 @@ public partial class CyberDetalhes : System.Web.UI.Page
         string comando =
           "IF NOT EXISTS (Select * FROM TP WHERE (Alerta = '" + objTextBox.ToolTip.ToString() + "')) " +
           "BEGIN " +
-           "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Data) VALUES ( " +
+           "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Coment, Data ) VALUES ( " +
             " '" + objTextBox.Text.ToString() + "', " +
             " '" + objTextBox.ToolTip.ToString() + "', " +
             " '" + hashtableNomeDevice[objTextBox.ToolTip.ToString()] + "', " +
@@ -286,53 +261,74 @@ public partial class CyberDetalhes : System.Web.UI.Page
             " '" + HttpContext.Current.Request.LogonUserIdentity.Name + "', " +
             " '" + hashTableMonitor[objTextBox.ToolTip.ToString()] + "', " +
             " '" + hashTableDuração[objTextBox.ToolTip.ToString()] + "', " +
-            " '" + recuperaInfoJupiter(objTextBox.Text.ToString(), "Status").Replace("Status: ", "") + "'," +
+            " '" + recuperaInfoJupiter(objTextBox.Text.ToString(), "Status").Replace("Status: ", "") + "', " +
+            " '" + hashTableComment[objTextBox.ToolTip.ToString()] + "'," +
             " '" + DateTime.Now + "')" +
             "END " +
             "ELSE " +
             "BEGIN " +
             " UPDATE TP set nTP = '" + objTextBox.Text.ToString() + "', " +
-            " Status = '" + recuperaInfoJupiter(objTextBox.Text.ToString(), "Status").Replace("Status: ", "") + "', " +
-           " Data = '" + DateTime.Now + "' " +
+            " Data = '" + DateTime.Now + "', " +
+            " Status = '" + recuperaInfoJupiter(objTextBox.Text.ToString(), "Status").Replace("Status: ", "") + "' " +
             "WHERE (Alerta = '" + objTextBox.ToolTip.ToString() + "' AND DataAlerta = '" + hashTableDataAlerta[objTextBox.ToolTip] + "' ) END";
 
         LinxDashNoc.InsertCommand = comando;
         LinxDashNoc.Insert();
         GridView1.DataBind();
     }
-    protected string SelectComand(string DataAlerta, string Monitor, string NomeDevice, string diferençaHora)
+    protected string SelectComand(string DataAlerta, string Monitor, string NomeDevice, string Comentario, string diferençaHora, string alerta)
     {
-        string resultado;
+        string resultado = "Novo";
         string comando = "set dateformat dmy " +
                          "SELECT top 1 nTP from TP where  DataAlerta = '" + DataAlerta + "' AND Monitor = '" + Monitor + "' " +
                          "AND nomeDevice = '" + NomeDevice + "' " +
-                         "order by Duração desc";
+                         "AND Coment = '" + Comentario + "' " +
+                         "order by DataAlerta desc";
         LinxDashNoc.SelectCommand = comando;
         DataView test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
         int record = test.Count;
-        if (record != 0)
+        if (record != 0)  // Entrou e permance no DASH
         {
             resultado = test[0][0].ToString();
-
         }
-        else
+        else // alerta reincidente possivelmente com DataAlerta diferente mas mesmo monitor, nomedevice  e comentario
         {
             comando = "set dateformat dmy " +
-            "SELECT top 1 nTP from TP where  datediff(hh, Data ,GETDATE()) < '" + diferençaHora + "' " +
-            "AND Monitor = '" + Monitor + "' " +
-            "AND nomeDevice = '" + NomeDevice + "' " +
-            "order by Duração desc";
+                              "SELECT top 1 Alerta from TP where  nomeDevice = '" + NomeDevice + "' " +
+                              "AND Monitor = '" + Monitor + "' " +
+                              "AND Coment = '" + Comentario + "' " +
+                              "order by DataAlerta desc ";
             LinxDashNoc.SelectCommand = comando;
             test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
             record = test.Count;
-            if (record != 0)
+            if (record != 0)  // Encontrou o Alerta antigo vai checar diferença de 2 horas 
             {
-                resultado = test[0][0].ToString();
-            }
-            else
-                resultado = "Novo";
-        }
+                string alertaAntigo = test[0][0].ToString();
+                comando = "set dateformat dmy " +
+                        "select * from ActiveMonitorStateChangeLog where nActiveMonitorStateChangeLogID = '" + alertaAntigo + "' " +
+                        "and  datediff(hh, dEndTime ,GETDATE()) < '" + diferençaHora + "' ";
+                Cyber2.SelectCommand = comando;
+                test = (DataView)Cyber2.Select(DataSourceSelectArguments.Empty);
+                record = test.Count;
+                if (record != 0)
+                {
+                    comando = "set dateformat dmy " +
+                          "SELECT top 1 nTP from TP where  Alerta = '" + alertaAntigo + "' AND Monitor = '" + Monitor + "' " +
+                          "AND nomeDevice = '" + NomeDevice + "' " +
+                          "AND Coment = '" + Comentario + "' " +
+                          "order by DataAlerta desc";
+                    LinxDashNoc.SelectCommand = comando;
+                    test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
+                    record = test.Count;
+                    if (record != 0)
+                    {
+                        resultado = test[0][0].ToString();
+                    }
 
+                }
+
+            }
+        }
 
         return resultado;
     }
@@ -419,6 +415,7 @@ public partial class CyberDetalhes : System.Web.UI.Page
              }
         }
 
+            resultado = resultado.Trim();
         return resultado;
     }
     protected string recuperaFootPrint(string tp, string tipo)

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ItaimDetalhes.aspx.cs" Inherits="ItaimDetalhes" Culture="pt-BR" UICulture="pt-BR" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="UberlandiaDetalhes.aspx.cs" Inherits="UberlandiaDetalhes" Culture="pt-BR" UICulture="pt-BR" %>
 
 <!DOCTYPE html>
 <!--
@@ -23,27 +23,25 @@
     -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Itaim - Versão: 1.1.1</title>
+    <title>Uberlândia - Versão: 1.1.1</title>
 
-         <script>
- 
-         function expandir(name)
-         {
-             var div = document.getElementById(name)
-             var img = document.getElementById('img' + name);
-             if (div.style.display == 'none')
-             {
-                 div.style.display = "inline";
-                 img.src = "img/minus.gif";
-           
-             }
-             else {
-                 div.style.display = "none";
-                 img.src = "img/plus.gif";
-                  
-             }
-           
-         }
+    <script>
+
+        function expandir(name) {
+            var div = document.getElementById(name)
+            var img = document.getElementById('img' + name);
+            if (div.style.display == 'none') {
+                div.style.display = "inline";
+                img.src = "img/minus.gif";
+
+            }
+            else {
+                div.style.display = "none";
+                img.src = "img/plus.gif";
+
+            }
+
+        }
     </script>
     <style type="text/css">
         .auto-style2 {
@@ -51,6 +49,14 @@
         }
         .auto-style3 {
             width: 93%;
+        }
+    .auto-resize
+        {
+            height: 100%;
+            width: 100%;
+            left: 50%;
+            right: 50%;
+            top: 100%;
         }
     .Centraliza
         {
@@ -63,23 +69,6 @@
            
                      
          }
-    .auto-resize
-        {
-            height: 100%;
-            width: 100%;
-            left: 50%;
-            right: 50%;
-            top: 100%;
-        }
-        .auto-resize
-        {
-            height: 100%;
-            width: 100%;
-            left: 50%;
-            right: 50%;
-            top: 100%;
-            
-        }
         .ocultar{
             display:none;
         }
@@ -99,7 +88,6 @@
         {
             height: 50px;
         }
-        
     </style>
     <link rel="shortcut icon" href="img/Linx.ico" >
 </head>
@@ -109,7 +97,7 @@
     
     <div>
     
-        <asp:SqlDataSource ID="Itaim" runat="server" ConnectionString="<%$ ConnectionStrings:WhatsUpItaim %>" SelectCommand="SELECT *
+        <asp:SqlDataSource ID="Uberlandia" runat="server" ConnectionString="<%$ ConnectionStrings:WhatsUpUberlandia %>" SelectCommand="SELECT *
 FROM (
 SELECT DISTINCT DeviceAttribute.sName,
 				DeviceAttribute.sValue,
@@ -120,7 +108,7 @@ SELECT DISTINCT DeviceAttribute.sName,
 				PivotActiveMonitorTypeToDevice.sComment,
 				MonitorState.nInternalStateTime,
                 PivotActiveMonitorTypeToDevice.dLastInternalStateTime,
-				ActiveMonitorStateChangeLog.sResult,		
+				ActiveMonitorStateChangeLog.sResult,
                 PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID,
                 ActiveMonitorStateChangeLog.nActiveMonitorStateChangeLogID,
             	ActiveMonitorType.nActiveMonitorTypeID
@@ -157,9 +145,11 @@ WHERE          	(ActiveMonitorStateChangeLog.dEndTime IS NULL)
 				AND (
 					 DeviceAttribute.sName = N'Prioridade'
 					 OR DeviceAttribute.sName = N'Acionamento'
+				--	 OR DeviceAttribute.sName = N'DASH_Diretoria01'
 					 OR DeviceAttribute.sName = N'DC'
 					 OR DeviceAttribute.sName = N'WUG'
-                     OR DeviceAttribute.sName = N'Produto_Footprint'
+					 OR DeviceAttribute.sName = N'Produto_Footprint'
+					 OR DeviceAttribute.sName = N'Produto'
 					 OR DeviceAttribute.sName = N'KBOPM'
 					 OR DeviceAttribute.sName = N'KBOPP'
 					 OR DeviceAttribute.sName = N'Excecao'
@@ -173,7 +163,7 @@ PIVOT (
 ORDER BY dLastInternalStateTime DESC">
 
         </asp:SqlDataSource>
-        <asp:SqlDataSource ID="Itaim2" runat="server" ConnectionString="<%$ ConnectionStrings:WhatsUpItaim %>" SelectCommand="SELECT *
+        <asp:SqlDataSource ID="Uber2" runat="server" ConnectionString="<%$ ConnectionStrings:WhatsUpUberlandia %>" SelectCommand="SELECT *
 FROM (
 SELECT DISTINCT DeviceAttribute.sName,
 				DeviceAttribute.sValue,
@@ -184,7 +174,7 @@ SELECT DISTINCT DeviceAttribute.sName,
 				PivotActiveMonitorTypeToDevice.sComment,
 				MonitorState.nInternalStateTime,
                 PivotActiveMonitorTypeToDevice.dLastInternalStateTime,
-				ActiveMonitorStateChangeLog.sResult,		
+				ActiveMonitorStateChangeLog.sResult,
                 PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID,
                 ActiveMonitorStateChangeLog.nActiveMonitorStateChangeLogID,
             	ActiveMonitorType.nActiveMonitorTypeID
@@ -221,9 +211,11 @@ WHERE          	(ActiveMonitorStateChangeLog.dEndTime IS NULL)
 				AND (
 					 DeviceAttribute.sName = N'Prioridade'
 					 OR DeviceAttribute.sName = N'Acionamento'
+				--	 OR DeviceAttribute.sName = N'DASH_Diretoria01'
 					 OR DeviceAttribute.sName = N'DC'
 					 OR DeviceAttribute.sName = N'WUG'
-                     OR DeviceAttribute.sName = N'Produto_Footprint'
+					 OR DeviceAttribute.sName = N'Produto_Footprint'
+					 OR DeviceAttribute.sName = N'Produto'
 					 OR DeviceAttribute.sName = N'KBOPM'
 					 OR DeviceAttribute.sName = N'KBOPP'
 					 OR DeviceAttribute.sName = N'Excecao'
@@ -237,18 +229,15 @@ PIVOT (
 ORDER BY dLastInternalStateTime DESC">
 
         </asp:SqlDataSource>
+       <asp:SqlDataSource ID="LinxDashNoc" runat="server" ConnectionString="<%$ ConnectionStrings:LinxDashNocStr %>" SelectCommand="SELECT * FROM [tp]" ></asp:SqlDataSource>
+        <asp:SqlDataSource ID="Jupiter" runat="server" ConnectionString="<%$ ConnectionStrings:JupiterConnectionString %>"    ></asp:SqlDataSource>
 
-            <asp:SqlDataSource ID="Jupiter" runat="server" ConnectionString="<%$ ConnectionStrings:JupiterConnectionString %>"   ></asp:SqlDataSource>
-
-        <asp:SqlDataSource ID="LinxDashNoc" runat="server" ConnectionString="<%$ ConnectionStrings:LinxDashNocStr %>" SelectCommand="SELECT * FROM [tp]" ></asp:SqlDataSource>
-    
     </div>
         <asp:ScriptManager ID="ScriptManager1" runat="server">
         </asp:ScriptManager>
-        <asp:Timer ID="Timer1" runat="server" Enabled="false" OnTick="Timer1_Tick" Interval="60000">
+        <asp:Timer ID="Timer1" runat="server" Enabled="" OnTick="Timer1_Tick" Interval="60000">
 
         </asp:Timer>
-
                     <tr>
                 <td>
 
@@ -304,7 +293,7 @@ div.WordSection1
 </style>
                     <div style="page: WordSection1;">
                         <p class="MsoNormal" style="margin-bottom: 0cm; margin-bottom: .0001pt; line-height: normal; text-autospace: none; text-align: center; background-color: #5D7B9D;">
-                            <span style="font-size: 46pt; font-family: 'Arial Narrow'; color: #FFFFFF; background-color: #5D7B9D; font-weight: lighter;">Itaim</span></p>
+                            <span style="font-size: 46pt; font-family: 'Arial Narrow'; color: #FFFFFF; background-color: #5D7B9D; font-weight: lighter;">Uberlândia</span></p>
                     </div>
 
                 </td>
@@ -320,22 +309,35 @@ div.WordSection1
         <asp:Button ID="Button2" runat="server" OnClick="Button1_Click" Text="Atualizar" Width="86px" />
  
                 </td>
+                <td class="auto-style3">
+    
+                    Refresh:
+    
+                    <asp:DropDownList AutoPostBack="true" ID="alterarRefreshuser" runat="server" OnSelectedIndexChanged="alterarRefresh">
+                        <asp:ListItem>Padrao</asp:ListItem>
+                        <asp:ListItem>1 min</asp:ListItem>
+                        <asp:ListItem>5 min</asp:ListItem>
+                        <asp:ListItem>10 min</asp:ListItem>
+                        <asp:ListItem>30 min</asp:ListItem>
+                    </asp:DropDownList>
+ 
+                </td>
             </tr>
             <tr>
                 <td class="auto-resize" colspan="3">
     
-        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4" DataSourceID="Itaim" ForeColor="#333333"  OnRowDataBound="Manipula"  style="text-align: center" OnSelectedIndexChanged="GridView1_SelectedIndexChanged" Font-Names="Arial Narrow"
-            DataKeyNames ="nPivotActiveMonitorTypeToDeviceID,nActiveMonitorStateChangeLogID,nActiveMonitorTypeID" CssClass="auto-resize">
+        <asp:GridView ID="GridUberlandia" runat="server" AutoGenerateColumns="False" CellPadding="4" DataSourceID="Uberlandia" ForeColor="#333333"  OnRowDataBound="Manipula"  style="text-align: center" OnSelectedIndexChanged="GridUberlandia_SelectedIndexChanged" Font-Names="Arial Narrow"
+             DataKeyNames ="nPivotActiveMonitorTypeToDeviceID,nActiveMonitorStateChangeLogID,nActiveMonitorTypeID" CssClass="auto-resize">
             <AlternatingRowStyle CssClass="AlternativeRowStyle" BackColor="White" ForeColor="#284775" />
             <Columns>
-                <asp:TemplateField>
+  <asp:TemplateField>
                     <ItemTemplate>
                         <a href="JavaScript:expandir('<%#Eval("nActiveMonitorStateChangeLogID") %>');">
                             <img src="img/plus.gif" id='img<%#Eval("nActiveMonitorStateChangeLogID") %>' />
                         </ItemTemplate>
                 </asp:TemplateField>
                 <asp:BoundField DataField="Prioridade" HeaderText="Pr" ReadOnly="True" SortExpression="Prioridade" />
-                <asp:BoundField DataField="Acionamento" HeaderText="Ac" ReadOnly="True" SortExpression="Acionamento" />
+                 <asp:BoundField DataField="Acionamento" HeaderText="Ac" ReadOnly="True" SortExpression="Acionamento" />
                 <asp:BoundField DataField="KBOPM" HeaderText="KBN" ReadOnly="True" SortExpression="KBN" />
                 <asp:BoundField DataField="sDisplayName" HeaderText="Dispositivo" SortExpression="Dispositivo" />
                 <asp:BoundField DataField="sNetworkAddress" HeaderText="IP" SortExpression="IP" />
@@ -410,7 +412,6 @@ div.WordSection1
                         </tr>
      
                     </table>
-
                                 <table class="auto-resize">
                                     <tr >
                                          <th> Mensagem</th>
@@ -426,6 +427,8 @@ div.WordSection1
                         </tr>
                     </ItemTemplate>
                 </asp:TemplateField>
+                
+
             </Columns>
             <EditRowStyle BackColor="#999999" />
             <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
@@ -444,6 +447,9 @@ div.WordSection1
         </table>
     
     </div>
+        <p>
+            <asp:Label ID="Messagem" ForeColor="Red" Visible="false" Enabled ="false" runat ="server" Text="Label"></asp:Label>
+        </p>
     </form>
 </body>
 </html>

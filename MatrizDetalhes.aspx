@@ -25,7 +25,7 @@
     -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Matriz - Versão: 1.1.0</title>
+    <title>Matriz - Versão: 1.1.1</title>
 
      <script>
  
@@ -202,7 +202,70 @@ PIVOT (
 		FOR sName IN ([Prioridade], [Acionamento], [DASH_Diretoria01], [DC], [WUG], [Produto_Footprint], [Produto], [KBOPM], [KBOPP], [Excecao]) 
 	  ) AS pvt
 ORDER BY dLastInternalStateTime DESC"></asp:SqlDataSource>
-    
+        <asp:SqlDataSource ID="Matriz2" runat="server" ConnectionString="<%$ ConnectionStrings:WhatsUpMatriz %>" SelectCommand="SELECT *
+FROM (
+SELECT DISTINCT DeviceAttribute.sName,
+				DeviceAttribute.sValue,
+				Device.sDisplayName,
+				NetworkInterface.sNetworkAddress,
+				DeviceGroup.sGroupName,
+				ActiveMonitorType.sMonitorTypeName,
+				PivotActiveMonitorTypeToDevice.sComment,
+				MonitorState.nInternalStateTime,
+                PivotActiveMonitorTypeToDevice.dLastInternalStateTime,
+				ActiveMonitorStateChangeLog.sResult,	
+                PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID,
+                ActiveMonitorStateChangeLog.nActiveMonitorStateChangeLogID,
+            	ActiveMonitorType.nActiveMonitorTypeID
+
+				
+FROM            ActiveMonitorStateChangeLog WITH (NOLOCK)
+				INNER JOIN PivotActiveMonitorTypeToDevice 
+				ON ActiveMonitorStateChangeLog.nPivotActiveMonitorTypeToDeviceID = PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID
+				INNER JOIN MonitorState WITH (NOLOCK)
+				ON PivotActiveMonitorTypeToDevice.nMonitorStateID = MonitorState.nMonitorStateID 
+				INNER JOIN Device WITH (NOLOCK) 
+				ON PivotActiveMonitorTypeToDevice.nDeviceID = Device.nDeviceID
+				INNER JOIN ActiveMonitorType WITH (NOLOCK) 
+				ON PivotActiveMonitorTypeToDevice.nActiveMonitorTypeID = ActiveMonitorType.nActiveMonitorTypeID 
+				INNER JOIN PivotDeviceToGroup WITH (NOLOCK)
+				ON Device.nDeviceID = PivotDeviceToGroup.nDeviceID 
+				INNER JOIN DeviceGroup WITH (NOLOCK) 
+				ON PivotDeviceToGroup.nDeviceGroupID = DeviceGroup.nDeviceGroupID 
+				LEFT OUTER JOIN DeviceAttribute WITH (NOLOCK) 
+				ON Device.nDeviceID = DeviceAttribute.nDeviceID
+				INNER JOIN NetworkInterface WITH (NOLOCK) 
+				ON Device.nDeviceID = NetworkInterface.nDeviceID
+				
+WHERE          	(ActiveMonitorStateChangeLog.dEndTime IS NULL)
+			    AND (Device.bRemoved = 0)
+				AND (sGroupName NOT LIKE '%Discovery%') 
+                AND (nInternalStateTime > 2)
+                AND (PivotActiveMonitorTypeToDevice.bRemoved = 0) 
+				AND (PivotActiveMonitorTypeToDevice.bDisabled = 0) 
+				AND (ActiveMonitorType.bRemoved = 0) 
+				AND (ActiveMonitorType.bRemoved = 0) 
+				AND (MonitorState.nInternalMonitorState = 1)
+				AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID)
+				AND (
+					 DeviceAttribute.sName = N'Prioridade'
+					 OR DeviceAttribute.sName = N'Acionamento'
+					 OR DeviceAttribute.sName = N'DC'
+					 OR DeviceAttribute.sName = N'WUG'
+					 OR DeviceAttribute.sName = N'Produto'
+					 OR DeviceAttribute.sName = N'KBOPM'
+					 OR DeviceAttribute.sName = N'KBOPP'
+					 OR DeviceAttribute.sName = N'Excecao'
+                     OR DeviceAttribute.sName = N'Produto_Footprint'
+					 )
+		 ) AS a
+												
+PIVOT (
+		max(sValue) 
+		FOR sName IN ([Prioridade], [Acionamento], [DASH_Diretoria01], [DC], [WUG], [Produto_Footprint], [Produto], [KBOPM], [KBOPP], [Excecao]) 
+	  ) AS pvt
+ORDER BY dLastInternalStateTime DESC"></asp:SqlDataSource>
+
         <asp:SqlDataSource ID="LinxDashNoc" runat="server" ConnectionString="<%$ ConnectionStrings:LinxDashNocStr %>" SelectCommand="SELECT * FROM [tp]" ></asp:SqlDataSource>
     
         <asp:SqlDataSource ID="Jupiter" runat="server" ConnectionString="<%$ ConnectionStrings:JupiterConnectionString %>"  OnSelecting="LinxDashNoc0_Selecting" ></asp:SqlDataSource>
