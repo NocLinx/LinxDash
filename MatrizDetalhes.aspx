@@ -25,7 +25,7 @@
     -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Matriz - Versão: 2.0.0</title>
+    <title>Matriz - Versão: 3.0.0</title>
 
      <script>
  
@@ -177,7 +177,7 @@ FROM            ActiveMonitorStateChangeLog WITH (NOLOCK)
 WHERE          	(ActiveMonitorStateChangeLog.dEndTime IS NULL)
 			    AND (Device.bRemoved = 0)
 				AND (sGroupName NOT LIKE '%Discovery%') 
-             --   AND (nInternalStateTime > 2)
+                AND (nInternalStateTime > 2)
                 AND (PivotActiveMonitorTypeToDevice.bRemoved = 0) 
 				AND (PivotActiveMonitorTypeToDevice.bDisabled = 0) 
 				AND (ActiveMonitorType.bRemoved = 0) 

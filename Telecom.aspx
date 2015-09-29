@@ -25,7 +25,7 @@
     -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Telecom - Versão: 2.0.0</title>
+    <title>Telecom - Versão: 3.0.0</title>
 
      <script>
  

@@ -23,7 +23,7 @@
     -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Cyber - Versão: 2.0.0</title>
+    <title>Cyber - Versão: 3.0.0</title>
 
     <script>
  

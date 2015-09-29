@@ -23,7 +23,7 @@
     -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Dashboard - Versão: 2.0.0</title>
+    <title>Dashboard - Versão: 3.0.0</title>
     <style type="text/css">
         .auto-style3
          {
@@ -31,7 +31,7 @@
         }
         .auto-style4 
         {
-            text-align: right;
+            text-align: left;
         }
          .auto-resize
         {
@@ -40,6 +40,9 @@
             left: 50%;
             right: 50%;
             top: 100%;
+        }
+        .auto-style5 {
+            text-align: right;
         }
         </style>
     <link rel="shortcut icon" href="img/Linx.ico" >
@@ -54,9 +57,9 @@
         </asp:ScriptManager>
  
 
-             <div class="auto-style4">
+             <div class="auto-style5">
 
-                    Dashboard - Versão: <a href="ver.html">2.0.0</a><br />
+                    Dashboard - Versão: <a href="ver.html">3.0.0</a><br />
                     <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label>
 
          <br />
@@ -65,7 +68,7 @@
             <tr>
                 <td class="auto-style4" colspan="4"  > 
          
-                    &nbsp;</td>
+                    Use F5 dentro do Frame para retornar a pagina principal do mesmo</td>
             </tr>
             <tr>
                 <td class="auto-style4" colspan="4"  > 
