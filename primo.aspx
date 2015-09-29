@@ -631,7 +631,7 @@ ORDER BY dLastInternalStateTime DESC">
              </Columns>
             <EditRowStyle BackColor="#999999" />
             <EmptyDataTemplate>
-                  OK! <br />
+                  Em breve<br />
             </EmptyDataTemplate>
             <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
             <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
@@ -656,7 +656,7 @@ ORDER BY dLastInternalStateTime DESC">
              </Columns>
             <EditRowStyle BackColor="#999999" />
             <EmptyDataTemplate>
-                  OK! <br />
+                  Em breve<br />
             </EmptyDataTemplate>
             <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
             <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />

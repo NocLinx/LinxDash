@@ -217,7 +217,7 @@ ORDER BY dLastInternalStateTime DESC"></asp:SqlDataSource>
             <EditRowStyle BackColor="#999999" />
             <EmptyDataRowStyle  HorizontalAlign="Center" VerticalAlign="Top" />
             <EmptyDataTemplate>
-                Nenhum incidente detectado. OK <br />           
+                Em breve           
             </EmptyDataTemplate>
             <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
             <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
