@@ -21,10 +21,6 @@ public partial class _Default : System.Web.UI.Page
         }
 
     }
-    protected void Timer1_Tick(object sender, EventArgs e)
-    {
-         Label1.Text = "Atualizado em: " + DateTime.Now.ToString();
-    }
  
 
 }

@@ -48,11 +48,6 @@ public partial class ItaimDetalhes : System.Web.UI.Page
             GridView1.DataBind();
         }
     }
-    protected void Timer1_Tick(object sender, EventArgs e)
-    {
-        GridView1.DataBind();
-
-    }
 
     protected void Manipula(Object sender, GridViewRowEventArgs e)
     {
@@ -216,7 +211,7 @@ public partial class ItaimDetalhes : System.Web.UI.Page
     }
     protected void Button2_Click(object sender, EventArgs e)
     {
-        Response.Redirect("Default.aspx");
+        Response.Redirect("primo.aspx");
     }
 
 
@@ -275,7 +270,7 @@ public partial class ItaimDetalhes : System.Web.UI.Page
                               "SELECT top 1 Alerta from TP where  nomeDevice = '" + NomeDevice + "' " +
                               "AND Monitor = '" + Monitor + "' " +
                               "AND Coment = '" + Comentario + "' " +
-                         "order by DataAlerta desc";
+                              "order by DataAlerta desc ";
             LinxDashNoc.SelectCommand = comando;
             test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
             record = test.Count;
@@ -286,6 +281,7 @@ public partial class ItaimDetalhes : System.Web.UI.Page
                         "select * from ActiveMonitorStateChangeLog where nActiveMonitorStateChangeLogID = '" + alertaAntigo + "' " +
                         "and  datediff(hh, dEndTime ,GETDATE()) < '" + diferençaHora + "' ";
                 Itaim2.SelectCommand = comando;
+                 
                 test = (DataView)Itaim2.Select(DataSourceSelectArguments.Empty);
                 record = test.Count;
                 if (record != 0)
@@ -294,30 +290,34 @@ public partial class ItaimDetalhes : System.Web.UI.Page
                           "SELECT top 1 nTP from TP where  Alerta = '" + alertaAntigo + "' AND Monitor = '" + Monitor + "' " +
                           "AND nomeDevice = '" + NomeDevice + "' " +
                           "AND Coment = '" + Comentario + "' " +
-                         "order by DataAlerta, Data desc";
+                          "order by DataAlerta, Data desc";
                     LinxDashNoc.SelectCommand = comando;
                     test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
                     record = test.Count;
                     if (record != 0)
                     {
-                        resultado = test[0][0].ToString();
-                        comando = "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Coment, Data ) VALUES ( " +
-                                          " '" + resultado + "', " +
-                                          " '" + alerta + "', " +
-                                          " '" + hashtableNomeDevice[alerta] + "', " +
-                                          " '" + hashTableDataAlerta[alerta] + "', " +
-                                          " '" + HttpContext.Current.Request.UserAgent + "', " +
-                                          " '" + System.Web.HttpContext.Current.Request.UserHostAddress + "', " +
-                                          " '" + System.Web.HttpContext.Current.Request.UserHostName + "', " +
-                                          " '" + HttpContext.Current.Request.LogonUserIdentity.Name + "', " +
-                                          " '" + hashTableMonitor[alerta] + "', " +
-                                          " '" + hashTableDuração[alerta] + "', " +
-                                          " '" + recuperaInfoJupiter(alerta, "Status").Replace("Status: ", "") + "', " +
-                                          " '" + hashTableComment[alerta] + "'," +
-                                          " '" + DateTime.Now + "')";
-                        LinxDashNoc.InsertCommand = comando;
-                        LinxDashNoc.Insert();
-                        GridView1.DataBind();
+                        string TP = test[0][0].ToString();
+                        if (validaTP(recuperaInfoJupiter(TP, "Status")))
+                        {
+                            comando = "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Coment, Data ) VALUES ( " +
+                                         " '" + TP + "', " +
+                                         " '" + alerta + "', " +
+                                         " '" + hashtableNomeDevice[alerta] + "', " +
+                                         " '" + hashTableDataAlerta[alerta] + "', " +
+                                         " '" + HttpContext.Current.Request.UserAgent + "', " +
+                                         " '" + System.Web.HttpContext.Current.Request.UserHostAddress + "', " +
+                                         " '" + System.Web.HttpContext.Current.Request.UserHostName + "', " +
+                                         " '" + HttpContext.Current.Request.LogonUserIdentity.Name + "', " +
+                                         " '" + hashTableMonitor[alerta] + "', " +
+                                         " '" + hashTableDuração[alerta] + "', " +
+                                         " '" + recuperaInfoJupiter(alerta, "Status").Replace("Status: ", "") + "', " +
+                                         " '" + hashTableComment[alerta] + "'," +
+                                         " '" + DateTime.Now + "')";
+                            LinxDashNoc.InsertCommand = comando;
+                            LinxDashNoc.Insert();
+                            GridView1.DataBind();
+                        }
+
 
 
                     }
@@ -325,6 +325,34 @@ public partial class ItaimDetalhes : System.Web.UI.Page
                 }
 
             }
+        }
+
+        return resultado;
+    }
+    protected bool validaTP(string status)
+    {
+        bool resultado = false;
+        switch (status)
+        {
+            case "CANCELADO/REPROVADA":
+                resultado = false;
+                break;
+            case "RESOLVIDO / FINALIZADO":
+                resultado = false;
+                break;
+            case "REPROVADO":
+                resultado = false;
+                break;
+            case "CONCLUIDA":
+                resultado = false;
+                break;
+            case "SUSPENSA":
+                resultado = false;
+                break;
+
+            default:
+                resultado = true;
+                break;
         }
 
         return resultado;
@@ -467,7 +495,6 @@ public partial class ItaimDetalhes : System.Web.UI.Page
 
         return resultado;
     }
-
     protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
     {
 

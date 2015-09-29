@@ -235,9 +235,6 @@ ORDER BY dLastInternalStateTime DESC">
     </div>
         <asp:ScriptManager ID="ScriptManager1" runat="server">
         </asp:ScriptManager>
-        <asp:Timer ID="Timer1" runat="server" Enabled="" OnTick="Timer1_Tick" Interval="60000">
-
-        </asp:Timer>
                     <tr>
                 <td>
 
@@ -311,17 +308,7 @@ div.WordSection1
                 </td>
                 <td class="auto-style3">
     
-                    Refresh:
-    
-                    <asp:DropDownList AutoPostBack="true" ID="alterarRefreshuser" runat="server" OnSelectedIndexChanged="alterarRefresh">
-                        <asp:ListItem>Padrao</asp:ListItem>
-                        <asp:ListItem>1 min</asp:ListItem>
-                        <asp:ListItem>5 min</asp:ListItem>
-                        <asp:ListItem>10 min</asp:ListItem>
-                        <asp:ListItem>30 min</asp:ListItem>
-                    </asp:DropDownList>
- 
-                </td>
+                    &nbsp;</td>
             </tr>
             <tr>
                 <td class="auto-resize" colspan="3">

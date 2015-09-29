@@ -48,10 +48,7 @@ public partial class _SaasDetalhes: System.Web.UI.Page
         GridView1.DataBind();
         }
     }
-    protected void Timer1_Tick(object sender, EventArgs e)
-    {
-        GridView1.DataBind();
-    }
+
 
     protected void Manipula(Object sender, GridViewRowEventArgs e)
     {
@@ -225,7 +222,7 @@ public partial class _SaasDetalhes: System.Web.UI.Page
     }
     protected void Button2_Click(object sender, EventArgs e)
     {
-        Response.Redirect("Default.aspx");
+        Response.Redirect("primo.aspx");
     }
     protected void TextBox1_TextChanged(object sender, EventArgs e)
     {
@@ -281,7 +278,7 @@ public partial class _SaasDetalhes: System.Web.UI.Page
                               "SELECT top 1 Alerta from TP where  nomeDevice = '" + NomeDevice + "' " +
                               "AND Monitor = '" + Monitor + "' " +
                               "AND Coment = '" + Comentario + "' " +
-                         "order by DataAlerta";
+                              "order by DataAlerta desc ";
             LinxDashNoc.SelectCommand = comando;
             test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
             record = test.Count;
@@ -300,30 +297,34 @@ public partial class _SaasDetalhes: System.Web.UI.Page
                           "SELECT top 1 nTP from TP where  Alerta = '" + alertaAntigo + "' AND Monitor = '" + Monitor + "' " +
                           "AND nomeDevice = '" + NomeDevice + "' " +
                           "AND Coment = '" + Comentario + "' " +
-                         "order by DataAlerta, Data desc";
+                          "order by DataAlerta, Data desc";
                     LinxDashNoc.SelectCommand = comando;
                     test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
                     record = test.Count;
                     if (record != 0)
                     {
-                        resultado = test[0][0].ToString();
-                        comando = "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Coment, Data ) VALUES ( " +
-                                          " '" + resultado + "', " +
-                                          " '" + alerta + "', " +
-                                          " '" + hashtableNomeDevice[alerta] + "', " +
-                                          " '" + hashTableDataAlerta[alerta] + "', " +
-                                          " '" + HttpContext.Current.Request.UserAgent + "', " +
-                                          " '" + System.Web.HttpContext.Current.Request.UserHostAddress + "', " +
-                                          " '" + System.Web.HttpContext.Current.Request.UserHostName + "', " +
-                                          " '" + HttpContext.Current.Request.LogonUserIdentity.Name + "', " +
-                                          " '" + hashTableMonitor[alerta] + "', " +
-                                          " '" + hashTableDuração[alerta] + "', " +
-                                          " '" + recuperaInfoJupiter(alerta, "Status").Replace("Status: ", "") + "', " +
-                                          " '" + hashTableComment[alerta] + "'," +
-                                          " '" + DateTime.Now + "')";
-                        LinxDashNoc.InsertCommand = comando;
-                        LinxDashNoc.Insert();
-                        GridView1.DataBind();
+                        string TP = test[0][0].ToString();
+                        if (validaTP(recuperaInfoJupiter(TP, "Status")))
+                        {
+                            comando = "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Coment, Data ) VALUES ( " +
+                                         " '" + TP + "', " +
+                                         " '" + alerta + "', " +
+                                         " '" + hashtableNomeDevice[alerta] + "', " +
+                                         " '" + hashTableDataAlerta[alerta] + "', " +
+                                         " '" + HttpContext.Current.Request.UserAgent + "', " +
+                                         " '" + System.Web.HttpContext.Current.Request.UserHostAddress + "', " +
+                                         " '" + System.Web.HttpContext.Current.Request.UserHostName + "', " +
+                                         " '" + HttpContext.Current.Request.LogonUserIdentity.Name + "', " +
+                                         " '" + hashTableMonitor[alerta] + "', " +
+                                         " '" + hashTableDuração[alerta] + "', " +
+                                         " '" + recuperaInfoJupiter(alerta, "Status").Replace("Status: ", "") + "', " +
+                                         " '" + hashTableComment[alerta] + "'," +
+                                         " '" + DateTime.Now + "')";
+                            LinxDashNoc.InsertCommand = comando;
+                            LinxDashNoc.Insert();
+                            GridView1.DataBind();
+                        }
+
 
 
                     }
@@ -331,6 +332,34 @@ public partial class _SaasDetalhes: System.Web.UI.Page
                 }
 
             }
+        }
+
+        return resultado;
+    }
+    protected bool validaTP(string status)
+    {
+        bool resultado = false;
+        switch (status)
+        {
+            case "CANCELADO/REPROVADA":
+                resultado = false;
+                break;
+            case "RESOLVIDO / FINALIZADO":
+                resultado = false;
+                break;
+            case "REPROVADO":
+                resultado = false;
+                break;
+            case "CONCLUIDA":
+                resultado = false;
+                break;
+            case "SUSPENSA":
+                resultado = false;
+                break;
+
+            default:
+                resultado = true;
+                break;
         }
 
         return resultado;
@@ -475,40 +504,6 @@ public partial class _SaasDetalhes: System.Web.UI.Page
     protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
     {
 
-    }
-    protected void alterarRefresh(object sender, EventArgs e)
-    {
-        if (alterarRefreshuser.SelectedIndex == 0)
-        {
-            Timer1.Enabled = false;
-        }
-        else
-        {
-            if (alterarRefreshuser.SelectedIndex == 1)
-            {
-                Timer1.Enabled = true;
-
-                Timer1.Interval = 60000;
-            }
-            if (alterarRefreshuser.SelectedIndex == 2)
-            {
-                Timer1.Enabled = true;
-
-                Timer1.Interval = 300000;
-            }
-            if (alterarRefreshuser.SelectedIndex == 3)
-            {
-                Timer1.Enabled = true;
-
-                Timer1.Interval = 600000;
-            }
-            if (alterarRefreshuser.SelectedIndex == 1)
-            {
-                Timer1.Enabled = true;
-
-                Timer1.Interval = 1800000;
-            }
-        }
     }
 }
 

@@ -245,9 +245,6 @@ ORDER BY dLastInternalStateTime DESC">
     </div>
         <asp:ScriptManager ID="ScriptManager1" runat="server">
         </asp:ScriptManager>
-        <asp:Timer ID="Timer1" runat="server" Enabled="false" OnTick="Timer1_Tick" Interval="60000">
-
-        </asp:Timer>
 
                     <tr>
                 <td>

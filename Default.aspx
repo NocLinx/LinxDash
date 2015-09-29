@@ -41,13 +41,7 @@
             right: 50%;
             top: 100%;
         }
-        .auto-style6 {
-            width: 15%;
-            left: auto;
-            right: 20%;
-            text-align: center;
-        }
-    </style>
+        </style>
     <link rel="shortcut icon" href="img/Linx.ico" >
 </head>
 <body>
@@ -58,9 +52,6 @@
          
          <asp:ScriptManager ID="ScriptManager1" runat="server">
         </asp:ScriptManager>
-        <asp:Timer ID="Timer1" runat="server" OnTick="Timer1_Tick" Interval="60000">
-
-        </asp:Timer>
  
 
              <div class="auto-style4">

@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using System.Collections;
+
 /*
  
     Desenvolvido por:
@@ -31,7 +32,7 @@ using System.Collections;
 
  
  */
-public partial class PoaDetalhes : System.Web.UI.Page
+public partial class _Telecom : System.Web.UI.Page
 {
 
 
@@ -40,32 +41,21 @@ public partial class PoaDetalhes : System.Web.UI.Page
     public static Hashtable hashTableMonitor;
     public static Hashtable hashTableDuração;
     public static Hashtable hashTableComment;
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack)
-        {
-
-            try
-            {
-
-                GridPOA.DataBind();
-            }
-            catch (System.Data.SqlClient.SqlException ex) //Catch SqlException
-            {
-                Response.Write(ex.Message + "Testando WPP");
-            }
-            catch (Exception ex) //Catch Other Exception
-            {
-                Response.Write(ex.Message + "Testando WPP");
-            }
-
+        if(!IsPostBack)
+        { 
+        GridView1.DataBind();          
         }
     }
+  
 
     protected void Manipula(Object sender, GridViewRowEventArgs e)
     {
-        if (GridPOA.Rows.Count == 0)
+        
+        if (GridView1.Rows.Count == 0)
         {
             hashtableNomeDevice = new Hashtable();
             hashTableDataAlerta = new Hashtable();
@@ -73,9 +63,8 @@ public partial class PoaDetalhes : System.Web.UI.Page
             hashTableDuração = new Hashtable();
             hashTableComment = new Hashtable();
 
-
         }
-        System.Drawing.Color OrangeRed = System.Drawing.ColorTranslator.FromHtml("#FF4500");
+        System.Drawing.Color OrangeRed =   System.Drawing.ColorTranslator.FromHtml("#FF4500");
         System.Drawing.Color Amarelo = System.Drawing.ColorTranslator.FromHtml("#FFFF99");
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
@@ -117,7 +106,7 @@ public partial class PoaDetalhes : System.Web.UI.Page
                 e.Row.Cells[12].Text = Convert.ToString(Math.Round(df.TotalDays)) + " dias";
 
             // Altera resultado das prioridades
-
+            
             if (e.Row.Cells[1].Text.Contains("1"))
             {
                 e.Row.Cells[1].Style.Add("background-Image", "url('img/red.png')");
@@ -125,6 +114,7 @@ public partial class PoaDetalhes : System.Web.UI.Page
                 e.Row.Cells[1].Attributes.Add("title", "Prioridade Alta!");
 
             }
+
             if (e.Row.Cells[1].Text.Contains("2"))
             {
                 e.Row.Cells[1].Style.Add("background-Image", "url('img/yellow.png')");
@@ -132,6 +122,12 @@ public partial class PoaDetalhes : System.Web.UI.Page
                 e.Row.Cells[1].Attributes.Add("title", "Prioridade Normal");
             }
 
+         /*   if (e.Row.Cells[1].Text.Contains("2") && e.Row.Cells[2].Text.Contains("24x07"))
+            {
+                e.Row.Cells[1].Style.Add("background-Image", "url('img/24x7_Normal.png')");
+                e.Row.Cells[1].Attributes.Add("title", "Alerta Novo!");
+            }
+*/
             e.Row.Cells[1].Style.Add("background-repeat", "no-repeat");
             e.Row.Cells[1].Text = "";
             e.Row.Cells[1].Attributes.Add("align", "center");
@@ -147,7 +143,6 @@ public partial class PoaDetalhes : System.Web.UI.Page
             System.Web.UI.WebControls.Label Recurso = (System.Web.UI.WebControls.Label)e.Row.FindControl("Recurso");
             System.Web.UI.WebControls.Label MensagemText = (System.Web.UI.WebControls.Label)e.Row.FindControl("Mensagem");
             System.Web.UI.WebControls.Label mostraTP = (System.Web.UI.WebControls.Label)e.Row.FindControl("ExibiTP");
-            // ###########################################//
 
             string alerta = e.Row.Cells[16].Text.ToString();
             string nomeDevice = e.Row.Cells[4].Text.ToString();
@@ -155,90 +150,84 @@ public partial class PoaDetalhes : System.Web.UI.Page
             string DlastTime = e.Row.Cells[11].Text.ToString();
             string comment = e.Row.Cells[10].Text.ToString();
             DateTime dataAlerta = Convert.ToDateTime(e.Row.Cells[13].Text);
-
-            // ###########################################//
+ 
             hashtableNomeDevice.Add(alerta, nomeDevice);
             hashTableDataAlerta.Add(alerta, dataAlerta);
             hashTableMonitor.Add(alerta, monitor);
             hashTableDuração.Add(alerta, DlastTime);
             hashTableComment.Add(alerta, comment);
 
+ 
+           inputext.ToolTip = alerta;
+           DisplayText.Text = SelectComand(e.Row.Cells[13].Text.ToString(), monitor, nomeDevice, comment, "2", alerta); // Recupera TP passa diferença hora como ultimo paremetro
+           DisplayText.ToolTip = "Tarefa programada, pode ser aberta tanto via Visual Linx como Linx WorkFlow Web";
+           StatusTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(),"Status");
+           StatusTP.ToolTip = "Toda vez que a pagina atualiza o Status da TP é atualizado também";
+           DataCadastroTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "DataCadastro");
+           DataCadastroTP.ToolTip = "Data em que a TP foi aberta no sistema (Visual Linx / WorkFlow Web)";
+           DiasTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "DiasTP");
+           DiasTP.ToolTip = "Total em dias que a TP foi aberta";
+           ProdutoFootPrint.Text = e.Row.Cells[17].Text.ToString();
+           ProdutoFootPrint.ToolTip = "Produto_FootPrint";
+           Recurso.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "ContatoRecurso");
+           mostraTP.Text = DisplayText.Text;
+           mostraTP.ToolTip = StatusTP.Text;
+
+            /*
+            * Tratando erros da tela 
+            */
+           string input = e.Row.Cells[15].Text;
+           int index = input.LastIndexOf("&#39;&#39; which does NOT");
+           if (index > 0)
+               input = input.Substring(0, index); // Apaga tudo depois do ultimo index
+
+           int index2 = input.LastIndexOf("Failure occurred for the following record:");
+           if (index2 > 0)
+               input = input.Substring(0, index2);// Apaga tudo depois do ultimo index
+
+           int index3 = input.LastIndexOf("which does NOT &#39;contains&#39");
+           if (index3 > 0)
+               input = input.Substring(0, index3);// Apaga tudo depois do ultimo index
+
+           MensagemText.Text = input.Trim();
+
             // ###########################################//
+           // apaga coluna alerta 
 
-            inputext.ToolTip = alerta;
-            DisplayText.Text = SelectComand(e.Row.Cells[13].Text.ToString(), monitor, nomeDevice, comment, "2", alerta); // Recupera TP passa diferença hora como ultimo paremetro
-            DisplayText.ToolTip = "Tarefa programada, pode ser aberta tanto via Visual Linx como Linx WorkFlow Web";
-            StatusTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "Status");
-            StatusTP.ToolTip = "Toda vez que a pagina atualiza o Status da TP é atualizado também";
-            DataCadastroTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "DataCadastro");
-            DataCadastroTP.ToolTip = "Data em que a TP foi aberta no sistema (Visual Linx / WorkFlow Web)";
-            DiasTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "DiasTP");
-            DiasTP.ToolTip = "Total em dias que a TP foi aberta";
-            ProdutoFootPrint.Text = e.Row.Cells[17].Text.ToString();
-            ProdutoFootPrint.ToolTip = "Produto_FootPrint";
-            Recurso.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "ContatoRecurso");
-            mostraTP.Text = DisplayText.Text;
-            mostraTP.ToolTip = StatusTP.Text;
+           e.Row.Cells[15].Visible = false; //Result
+           e.Row.Cells[16].Visible = false;
+           e.Row.Cells[17].Visible = false;
+           GridView1.Columns[15].HeaderText = "";
+           GridView1.Columns[16].HeaderText = "";
+           GridView1.Columns[17].HeaderText = "";
 
-             // ###########################################//
-            //Tratando erros da tela 
+           e.Row.Cells[15].CssClass = "ocultar";
+           e.Row.Cells[16].CssClass = "ocultar";
+           e.Row.Cells[17].CssClass = "ocultar";
 
-            string input = e.Row.Cells[15].Text;
-            int index = input.LastIndexOf("&#39;&#39; which does NOT");
-            if (index > 0)
-                input = input.Substring(0, index); // Apaga tudo depois do ultimo index
-
-            int index2 = input.LastIndexOf("Failure occurred for the following record:");
-            if (index2 > 0)
-                input = input.Substring(0, index2);// Apaga tudo depois do ultimo index
-
-            int index3 = input.LastIndexOf("which does NOT &#39;contains&#39");
-            if (index3 > 0)
-                input = input.Substring(0, index3);// Apaga tudo depois do ultimo index
-            MensagemText.Text = input.Trim();
-
-            // ###########################################//
-            // apaga coluna alerta 
-
-            e.Row.Cells[15].Visible = false;
-            e.Row.Cells[16].Visible = false;
-            e.Row.Cells[17].Visible = false;
-            GridPOA.Columns[15].HeaderText = " ";
-            GridPOA.Columns[16].HeaderText = " ";
-            GridPOA.Columns[17].HeaderText = "";
-            e.Row.Cells[15].CssClass = "ocultar";
-            e.Row.Cells[16].CssClass = "ocultar";
-            e.Row.Cells[17].CssClass = "ocultar";
-            // ###########################################//
-
-
-
-
-        }
+         }
 
     }
-
+    
     protected void Button1_Click(object sender, EventArgs e)
     {
-
-        GridPOA.DataBind();
+        
+        GridView1.DataBind();
     }
     protected void Button2_Click(object sender, EventArgs e)
     {
-        Response.Redirect("primo.aspx");
+        Response.Redirect("second.aspx");
     }
-
-
     protected void TextBox1_TextChanged(object sender, EventArgs e)
     {
         System.Web.UI.WebControls.TextBox objTextBox = (System.Web.UI.WebControls.TextBox)sender;
-
+        
         string comando =
           "IF NOT EXISTS (Select * FROM TP WHERE (Alerta = '" + objTextBox.ToolTip.ToString() + "')) " +
           "BEGIN " +
            "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Coment, Data ) VALUES ( " +
             " '" + objTextBox.Text.ToString() + "', " +
-            " '" + objTextBox.ToolTip.ToString() + "', " +
+            " '" + objTextBox.ToolTip.ToString() +"', " +
             " '" + hashtableNomeDevice[objTextBox.ToolTip.ToString()] + "', " +
             " '" + hashTableDataAlerta[objTextBox.ToolTip] + "', " +
             " '" + HttpContext.Current.Request.UserAgent + "', " +
@@ -247,7 +236,7 @@ public partial class PoaDetalhes : System.Web.UI.Page
             " '" + HttpContext.Current.Request.LogonUserIdentity.Name + "', " +
             " '" + hashTableMonitor[objTextBox.ToolTip.ToString()] + "', " +
             " '" + hashTableDuração[objTextBox.ToolTip.ToString()] + "', " +
-            " '" + recuperaInfoJupiter(objTextBox.Text.ToString(), "Status").Replace("Status: ", "") + "', " +
+            " '" + recuperaInfoJupiter(objTextBox.Text.ToString(),"Status").Replace("Status: ","") + "', " +
             " '" + hashTableComment[objTextBox.ToolTip.ToString()] + "'," +
             " '" + DateTime.Now + "')" +
             "END " +
@@ -260,28 +249,28 @@ public partial class PoaDetalhes : System.Web.UI.Page
 
         LinxDashNoc.InsertCommand = comando;
         LinxDashNoc.Insert();
-        GridPOA.DataBind();
+        GridView1.DataBind();
     }
-    protected string SelectComand(string DataAlerta, string Monitor, string NomeDevice, string Comentario, string diferençaHora, string alerta)
+    protected string SelectComand(string DataAlerta, string Monitor, string NomeDevice,string Comentario, string diferençaHora, string alerta)
     {
-        string resultado = "Novo";
+        string resultado =  "Novo";
         string comando = "set dateformat dmy " +
-                         "SELECT top 1 nTP from TP where  DataAlerta = '" + DataAlerta + "' AND Monitor = '" + Monitor + "' " +
+                         "SELECT top 1 nTP from TP where  DataAlerta = '" + DataAlerta + "' AND Monitor = '" + Monitor + "' "+
                          "AND nomeDevice = '" + NomeDevice + "' " +
                          "AND Coment = '" + Comentario + "' " +
                          "order by DataAlerta, Data desc";
         LinxDashNoc.SelectCommand = comando;
         DataView test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
         int record = test.Count;
-        if (record != 0)  // Entrou e permance no DASH
+        if (record !=0)  // Entrou e permance no DASH
         {
-            resultado = test[0][0].ToString();
+                resultado = test[0][0].ToString();
         }
         else // alerta reincidente possivelmente com DataAlerta diferente mas mesmo monitor, nomedevice  e comentario
         {
             comando = "set dateformat dmy " +
                               "SELECT top 1 Alerta from TP where  nomeDevice = '" + NomeDevice + "' " +
-                              "AND Monitor = '" + Monitor + "' " +
+                              "AND Monitor = '"+ Monitor +"' "+
                               "AND Coment = '" + Comentario + "' " +
                               "order by DataAlerta desc ";
             LinxDashNoc.SelectCommand = comando;
@@ -293,49 +282,48 @@ public partial class PoaDetalhes : System.Web.UI.Page
                 comando = "set dateformat dmy " +
                         "select * from ActiveMonitorStateChangeLog where nActiveMonitorStateChangeLogID = '" + alertaAntigo + "' " +
                         "and  datediff(hh, dEndTime ,GETDATE()) < '" + diferençaHora + "' ";
-                POA2.SelectCommand = comando;
-                test = (DataView)POA2.Select(DataSourceSelectArguments.Empty);
+                Telecom2.SelectCommand = comando;
+                test = (DataView)Telecom2.Select(DataSourceSelectArguments.Empty);
                 record = test.Count;
                 if (record != 0)
                 {
-                    comando = "set dateformat dmy " +
-                          "SELECT top 1 nTP from TP where  Alerta = '" + alertaAntigo + "' AND Monitor = '" + Monitor + "' " +
-                          "AND nomeDevice = '" + NomeDevice + "' " +
-                          "AND Coment = '" + Comentario + "' " +
-                          "order by DataAlerta, Data desc";
-                    LinxDashNoc.SelectCommand = comando;
-                    test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
-                    record = test.Count;
-                    if (record != 0)
-                    {
-                        string TP = test[0][0].ToString();
-                        if (validaTP(recuperaInfoJupiter(TP, "Status")))
-                        {
-                            comando = "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Coment, Data ) VALUES ( " +
-                                         " '" + TP + "', " +
-                                         " '" + alerta + "', " +
-                                         " '" + hashtableNomeDevice[alerta] + "', " +
-                                         " '" + hashTableDataAlerta[alerta] + "', " +
-                                         " '" + HttpContext.Current.Request.UserAgent + "', " +
-                                         " '" + System.Web.HttpContext.Current.Request.UserHostAddress + "', " +
-                                         " '" + System.Web.HttpContext.Current.Request.UserHostName + "', " +
-                                         " '" + HttpContext.Current.Request.LogonUserIdentity.Name + "', " +
-                                         " '" + hashTableMonitor[alerta] + "', " +
-                                         " '" + hashTableDuração[alerta] + "', " +
-                                         " '" + recuperaInfoJupiter(alerta, "Status").Replace("Status: ", "") + "', " +
-                                         " '" + hashTableComment[alerta] + "'," +
-                                         " '" + DateTime.Now + "')";
-                            LinxDashNoc.InsertCommand = comando;
-                            LinxDashNoc.Insert();
-                            GridPOA.DataBind();
-                        }
+                   comando = "set dateformat dmy " +
+                         "SELECT top 1 nTP from TP where  Alerta = '" + alertaAntigo + "' AND Monitor = '" + Monitor + "' " +
+                         "AND nomeDevice = '" + NomeDevice + "' " +
+                         "AND Coment = '" + Comentario + "' " +
+                         "order by DataAlerta, Data desc";
+                           LinxDashNoc.SelectCommand = comando;
+                           test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
+                            record = test.Count;
+                            if (record != 0)
+                            {
+                                string TP = test[0][0].ToString();
+                                if (validaTP(recuperaInfoJupiter(TP, "Status")))
+                                { 
+                                comando = "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Coment, Data ) VALUES ( " +
+                                                   " '" + TP + "', " +
+                                                   " '" + alerta + "', " +
+                                                   " '" + hashtableNomeDevice[alerta] + "', " +
+                                                   " '" + hashTableDataAlerta[alerta] + "', " +
+                                                   " '" + HttpContext.Current.Request.UserAgent + "', " +
+                                                   " '" + System.Web.HttpContext.Current.Request.UserHostAddress + "', " +
+                                                   " '" + System.Web.HttpContext.Current.Request.UserHostName + "', " +
+                                                   " '" + HttpContext.Current.Request.LogonUserIdentity.Name + "', " +
+                                                   " '" + hashTableMonitor[alerta] + "', " +
+                                                   " '" + hashTableDuração[alerta] + "', " +
+                                                   " '" + recuperaInfoJupiter(alerta, "Status").Replace("Status: ", "") + "', " +
+                                                   " '" + hashTableComment[alerta] + "'," +
+                                                   " '" + DateTime.Now + "')";
+                                 LinxDashNoc.InsertCommand = comando;
+                                 LinxDashNoc.Insert();
+                                 GridView1.DataBind();
+                                }
 
 
-
-                    }
-
+                            }
+                             
                 }
-
+               
             }
         }
 
@@ -371,30 +359,30 @@ public partial class PoaDetalhes : System.Web.UI.Page
     }
     protected string recuperaInfoJupiter(string tp, string tipo)
     {
-        string resultado = " ";
-        int nTP;
-        string comando;
-
-        if (tipo == "Status")
-        {
-            if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
-            {
-                comando = "SELECT  DESC_STATUS_TAREFA " +
-                                "FROM   W_CRM_TAREFA_PROGRAMADA " +
-                                "WHERE  PORC_CONCLUIDA like '%' " +
-                                "AND OBJETO_ID = '" + nTP.ToString() + "' ";
+            string resultado = " ";
+            int nTP;
+            string comando;
+       
+        if(tipo == "Status")
+        { 
+            if(int.TryParse(tp.Replace("TP: ",""), out nTP))
+            { 
+                 comando = "SELECT  DESC_STATUS_TAREFA " +
+                                 "FROM   W_CRM_TAREFA_PROGRAMADA " +
+                                 "WHERE  PORC_CONCLUIDA like '%' " +
+                                 "AND OBJETO_ID = '" + nTP.ToString() + "' ";
 
                 Jupiter.SelectCommand = comando;
                 DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
                 int retorno = jupiterina.Count;
                 if (retorno != 0)
-                    resultado = jupiterina[0][0].ToString();
+                    resultado =  jupiterina[0][0].ToString();                        
                 else
                     resultado = "Indefinido";
             }
 
         }
-        else if (tipo == "DataCadastro")
+        else if(tipo == "DataCadastro")
         {
             if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
             {
@@ -407,12 +395,11 @@ public partial class PoaDetalhes : System.Web.UI.Page
                 DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
                 int retorno = jupiterina.Count;
                 if (retorno != 0)
-                    resultado = jupiterina[0][0].ToString();
+                    resultado =   jupiterina[0][0].ToString() ;
                 else
                     resultado = "Indefinido";
             }
         }
-
         else if (tipo == "ContatoRecurso")
         {
             if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
@@ -431,79 +418,45 @@ public partial class PoaDetalhes : System.Web.UI.Page
                     resultado = "Indefinido";
             }
         }
-
         else if (tipo == "DiasTP")
         {
-            if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
+             if(int.TryParse(tp.Replace("TP: ",""), out nTP))
             {
                 comando = "SELECT  Datediff(day, DATA_CADASTRO, getdate())  " +
-                                "AS DIAS_TP " +
-                                "FROM   W_CRM_TAREFA_PROGRAMADA " +
-                                "WHERE  PORC_CONCLUIDA like '%' " +
-                                "AND OBJETO_ID = '" + nTP.ToString() + "' ";
+                                 "AS DIAS_TP " +
+                                 "FROM   W_CRM_TAREFA_PROGRAMADA " +
+                                 "WHERE  PORC_CONCLUIDA like '%' " +
+                                 "AND OBJETO_ID = '" + nTP.ToString() + "' ";
 
                 Jupiter.SelectCommand = comando;
                 DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
                 int retorno = jupiterina.Count;
                 if (retorno != 0)
-                    resultado = jupiterina[0][0].ToString();
+                {
+                    if (int.Parse(jupiterina[0][0].ToString()) >= 2)
+                        resultado =   jupiterina[0][0].ToString() + " dias";
+
+                    else
+                        resultado =  jupiterina[0][0].ToString() + " dia";
+
+                }
                 else
                     resultado = "Indefinido";
-            }
-        }
-
-        return resultado;
-    }
-    protected string recuperaFootPrint(string tp, string tipo)
-    {
-        string resultado = " ";
-        int nTP;
-        string comando;
-
-        if (tipo == "Vertical")
-        {
-            if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
-            {
-                comando = "SELECT  DESC_STATUS_TAREFA " +
-                                "FROM   W_CRM_TAREFA_PROGRAMADA " +
-                                "WHERE  PORC_CONCLUIDA like '%' " +
-                                "AND OBJETO_ID = '" + nTP.ToString() + "' ";
-
-                POA.SelectCommand = comando;
-                DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
-                int retorno = jupiterina.Count;
-                if (retorno != 0)
-                    resultado = jupiterina[0][0].ToString();
-                else
-                    resultado = "Indefinido";
-            }
-
-        }
-        else if (tipo == "Produto")
-        {
-            if (int.TryParse(tp.Replace("TP: ", ""), out nTP))
-            {
-                comando = "SELECT  DATA_CADASTRO " +
-                                "FROM   W_CRM_TAREFA_PROGRAMADA " +
-                                "WHERE  PORC_CONCLUIDA like '%' " +
-                                "AND OBJETO_ID = '" + nTP.ToString() + "' ";
-
-                Jupiter.SelectCommand = comando;
-                DataView jupiterina = (DataView)Jupiter.Select(DataSourceSelectArguments.Empty);
-                int retorno = jupiterina.Count;
-                if (retorno != 0)
-                    resultado = jupiterina[0][0].ToString();
-                else
-                    resultado = "Indefinido";
-            }
+             }
         }
 
         resultado = resultado.Trim();
         return resultado;
     }
-    protected void GridPOA_SelectedIndexChanged(object sender, EventArgs e)
+    protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
     {
 
     }
+    protected void LinxDashNoc0_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
+    {
+
+    }
+
+
 }
 

@@ -62,23 +62,6 @@ public partial class CyberDetalhes : System.Web.UI.Page
  
         }
     }
-    protected void Timer1_Tick(object sender, EventArgs e)
-    {
-        try
-        {
-
-            GridView1.DataBind();
-        }
-        catch (System.Data.SqlClient.SqlException ex) //Catch SqlException
-        {
-            Response.Write(ex.Message + "Testando WPP");
-        }
-        catch (Exception ex) //Catch Other Exception
-        {
-            Response.Write(ex.Message + "Testando WPP");
-        }
-
-    }
 
     protected void Manipula(Object sender, GridViewRowEventArgs e)
     {
@@ -239,10 +222,8 @@ public partial class CyberDetalhes : System.Web.UI.Page
     }
     protected void Button2_Click(object sender, EventArgs e)
     {
-        Response.Redirect("Default.aspx");
+        Response.Redirect("primo.aspx");
     }
-
-
     protected void TextBox1_TextChanged(object sender, EventArgs e)
     {
         System.Web.UI.WebControls.TextBox objTextBox = (System.Web.UI.WebControls.TextBox)sender;
@@ -322,9 +303,11 @@ public partial class CyberDetalhes : System.Web.UI.Page
                     record = test.Count;
                     if (record != 0)
                     {
-                        resultado = test[0][0].ToString();
+                        string TP = test[0][0].ToString();
+                        if (validaTP(recuperaInfoJupiter(TP, "Status")))
+                        { 
                         comando = "INSERT INTO TP (nTP,Alerta,nomeDevice,DataAlerta,UserAgent,IP,HostName,LogonUser,Monitor,Duração,Status, Coment, Data ) VALUES ( " +
-                                          " '" + resultado + "', " +
+                                          " '" + TP + "', " +
                                           " '" + alerta + "', " +
                                           " '" + hashtableNomeDevice[alerta] + "', " +
                                           " '" + hashTableDataAlerta[alerta] + "', " +
@@ -340,13 +323,41 @@ public partial class CyberDetalhes : System.Web.UI.Page
                         LinxDashNoc.InsertCommand = comando;
                         LinxDashNoc.Insert();
                         GridView1.DataBind();
-
+                        }
 
                     }
 
                 }
 
             }
+        }
+
+        return resultado;
+    }
+    protected bool validaTP(string status)
+    {
+        bool resultado = false;
+        switch (status)
+        {
+            case "CANCELADO/REPROVADA":
+                resultado = false;
+                break;
+            case "RESOLVIDO / FINALIZADO":
+                resultado = false;
+                break;
+            case "REPROVADO":
+                resultado = false;
+                break;
+            case "CONCLUIDA":
+                resultado = false;
+                break;
+            case "SUSPENSA":
+                resultado = false;
+                break;
+
+            default:
+                resultado = true;
+                break;
         }
 
         return resultado;
@@ -487,40 +498,6 @@ public partial class CyberDetalhes : System.Web.UI.Page
     protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
     {
 
-    }
-    protected void alterarRefresh(object sender, EventArgs e)
-    {
-        if (alterarRefreshuser.SelectedIndex == 0)
-        {
-            Timer1.Enabled = false;
-        }
-        else
-        {
-            if (alterarRefreshuser.SelectedIndex == 1)
-            {
-                Timer1.Enabled = true;
-
-                Timer1.Interval = 60000;
-            }
-            if (alterarRefreshuser.SelectedIndex == 2)
-            {
-                Timer1.Enabled = true;
-
-                Timer1.Interval = 300000;
-            }
-            if (alterarRefreshuser.SelectedIndex == 3)
-            {
-                Timer1.Enabled = true;
-
-                Timer1.Interval = 600000;
-            }
-            if (alterarRefreshuser.SelectedIndex == 1)
-            {
-                Timer1.Enabled = true;
-
-                Timer1.Interval = 1800000;
-            }
-        }
     }
 }
 

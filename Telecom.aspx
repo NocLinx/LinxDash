@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="MatrizDetalhes.aspx.cs" Inherits="_MatrizDetalhes" Culture="pt-BR" uiCulture="pt-BR" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Telecom.aspx.cs" Inherits="_Telecom" Culture="pt-BR" uiCulture="pt-BR" %>
 
 <%@ Register assembly="System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" namespace="System.Web.UI.DataVisualization.Charting" tagprefix="asp" %>
 
@@ -25,7 +25,7 @@
     -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Matriz - Versão: 2.0.0</title>
+    <title>Telecom - Versão: 2.0.0</title>
 
      <script>
  
@@ -139,7 +139,7 @@
     
     <div>
     
-        <asp:SqlDataSource ID="Matriz" runat="server" ConnectionString="<%$ ConnectionStrings:WhatsUpMatriz %>" SelectCommand="SELECT *
+        <asp:SqlDataSource ID="Telecom" runat="server" ConnectionString="<%$ ConnectionStrings:TicWhatsUpConnectionString %>" SelectCommand="SELECT *
 FROM (
 SELECT DISTINCT DeviceAttribute.sName,
 				DeviceAttribute.sValue,
@@ -177,7 +177,7 @@ FROM            ActiveMonitorStateChangeLog WITH (NOLOCK)
 WHERE          	(ActiveMonitorStateChangeLog.dEndTime IS NULL)
 			    AND (Device.bRemoved = 0)
 				AND (sGroupName NOT LIKE '%Discovery%') 
-             --   AND (nInternalStateTime > 2)
+                AND (nInternalStateTime > 2)
                 AND (PivotActiveMonitorTypeToDevice.bRemoved = 0) 
 				AND (PivotActiveMonitorTypeToDevice.bDisabled = 0) 
 				AND (ActiveMonitorType.bRemoved = 0) 
@@ -202,7 +202,7 @@ PIVOT (
 		FOR sName IN ([Prioridade], [Acionamento], [DASH_Diretoria01], [DC], [WUG], [Produto_Footprint], [Produto], [KBOPM], [KBOPP], [Excecao]) 
 	  ) AS pvt
 ORDER BY dLastInternalStateTime DESC"></asp:SqlDataSource>
-        <asp:SqlDataSource ID="Matriz2" runat="server" ConnectionString="<%$ ConnectionStrings:WhatsUpMatriz %>" SelectCommand="SELECT *
+        <asp:SqlDataSource ID="Telecom2" runat="server" ConnectionString="<%$ ConnectionStrings:TicWhatsUpConnectionString %>" SelectCommand="SELECT *
 FROM (
 SELECT DISTINCT DeviceAttribute.sName,
 				DeviceAttribute.sValue,
@@ -328,7 +328,7 @@ div.WordSection1
 </style>
                     <div style="page: WordSection1;">
                         <p class="MsoNormal" style="margin-bottom: 0cm; margin-bottom: .0001pt; line-height: normal; text-autospace: none; text-align: center; background-color: #5D7B9D;">
-                            <span style="font-size: 46pt; font-family: 'Arial Narrow'; color: #FFFFFF; background-color: #5D7B9D; font-weight: lighter;">Matriz</span></p>
+                            <span style="font-size: 46pt; font-family: 'Arial Narrow'; color: #FFFFFF; background-color: #5D7B9D; font-weight: lighter;">Telecom</span></p>
                     </div>
 
                 </td>
@@ -354,7 +354,7 @@ div.WordSection1
             <tr>
                 <td class="auto-resize" colspan="3">
     
-        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4" DataSourceID="Matriz" ForeColor="#333333"  OnRowDataBound="Manipula"  style="text-align: center" OnSelectedIndexChanged="GridView1_SelectedIndexChanged" BorderWidth="2px" ShowHeaderWhenEmpty="True" 
+        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4" DataSourceID="Telecom" ForeColor="#333333"  OnRowDataBound="Manipula"  style="text-align: center" OnSelectedIndexChanged="GridView1_SelectedIndexChanged" BorderWidth="2px" ShowHeaderWhenEmpty="True" 
             Font-Names="Arial Narrow" DataKeyNames ="nPivotActiveMonitorTypeToDeviceID,nActiveMonitorStateChangeLogID,nActiveMonitorTypeID" CssClass="auto-resize">
 
             <AlternatingRowStyle CssClass="AlternativeRowStyle" BackColor="White" ForeColor="#284775" />
