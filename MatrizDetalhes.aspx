@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="MatrizDetalhes.aspx.cs" Inherits="_MatrizDetalhes" Culture="pt-BR" uiCulture="pt-BR" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="MatrizDetalhes.aspx.cs" Inherits="_MatrizDetalhes" EnableEventValidation="false" Culture="pt-BR" uiCulture="pt-BR" %>
 
 <%@ Register assembly="System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" namespace="System.Web.UI.DataVisualization.Charting" tagprefix="asp" %>
 
@@ -345,6 +345,7 @@ div.WordSection1
     
         <asp:Button ID="Button2" runat="server" OnClick="Button1_Click" Text="Atualizar" Width="120px" />
  
+ 
                 </td>
                                 <td class="auto-style3">
     
@@ -362,7 +363,7 @@ div.WordSection1
                 <asp:TemplateField>
                     <ItemTemplate>
                         <a href="JavaScript:expandir('<%#Eval("nActiveMonitorStateChangeLogID") %>');">
-                            <img src="img/plus.gif" id='img<%#Eval("nActiveMonitorStateChangeLogID") %>' />
+                            <img src="http://a-srv121.linx-inves.com.br:8181/img/plus.gif" id='img<%#Eval("nActiveMonitorStateChangeLogID") %>' />
                         </ItemTemplate>
                 </asp:TemplateField>
                 <asp:BoundField DataField="Prioridade" HeaderText="Pr" ReadOnly="True" SortExpression="Prioridade" />

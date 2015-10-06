@@ -9,6 +9,14 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using System.Collections;
+using System.IO;
+using System.Text;
+using System.Net.Mail;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.text.html.simpleparser;
+
+ 
 
 /*
  
@@ -203,13 +211,19 @@ public partial class _MatrizDetalhes : System.Web.UI.Page
            e.Row.Cells[16].CssClass = "ocultar";
            e.Row.Cells[17].CssClass = "ocultar";
 
+        // ################################################//
+
+           e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(GridView1, "Select$" + e.Row.RowIndex);
+           e.Row.ToolTip = "Clique para selecionar está linha.";
+
          }
 
     }
     protected void Button1_Click(object sender, EventArgs e)
     {
         
-        GridView1.DataBind();
+        
+        ExportGridToPDF();
     }
     protected void Button2_Click(object sender, EventArgs e)
     {
@@ -449,8 +463,58 @@ public partial class _MatrizDetalhes : System.Web.UI.Page
     }
     protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
     {
-
+        foreach (GridViewRow row in GridView1.Rows)
+        {
+            if (row.RowIndex == GridView1.SelectedIndex)
+            {
+                row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
+                row.ToolTip = string.Empty;
+ 
+            }
+            else
+            {
+                row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
+                row.ToolTip = "Clique para selecionar está linha.";
+            }
+           
+        }
+       
     }
+    private string GridViewToHtml(GridView gv)
+    {
+        StringBuilder sb = new StringBuilder();
+        StringWriter sw = new StringWriter(sb);
+        HtmlTextWriter hw = new HtmlTextWriter(sw);
+        gv.RenderControl(hw);
+        return sb.ToString();
+    }
+    private void ExportGridToPDF()
+    {
+
+        Response.ContentType = "application/pdf";
+        Response.AddHeader("content-disposition", "attachment;filename=Teste.pdf");
+        Response.Cache.SetCacheability(HttpCacheability.NoCache);
+        StringWriter sw = new StringWriter();
+        HtmlTextWriter hw = new HtmlTextWriter(sw);
+        GridView1.RenderControl(hw);
+        StringReader sr = new StringReader(sw.ToString());
+        Document pdfDoc = new Document(PageSize.A4.Rotate(), 7f, 7f, 100f, 0f); 
+        HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
+        PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
+        pdfDoc.Open();
+        htmlparser.Parse(sr);
+        pdfDoc.Close();
+        Response.Write(pdfDoc);
+        Response.End();
+        GridView1.DataBind();
+
+  
+    }  
+    public override void VerifyRenderingInServerForm(System.Web.UI.Control control)
+    {
+        //required to avoid the runtime error "  
+        //Control 'GridView1' of type 'GridView' must be placed inside a form tag with runat=server."  
+    }  
     protected void LinxDashNoc0_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
     {
 
