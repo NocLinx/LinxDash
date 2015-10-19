@@ -16,8 +16,6 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html.simpleparser;
 
- 
-
 /*
  
     Desenvolvido por:
@@ -42,14 +40,11 @@ using iTextSharp.text.html.simpleparser;
  */
 public partial class _MatrizDetalhes : System.Web.UI.Page
 {
-
-
     public static Hashtable hashtableNomeDevice;
     public static Hashtable hashTableDataAlerta;
     public static Hashtable hashTableMonitor;
     public static Hashtable hashTableDuração;
     public static Hashtable hashTableComment;
-    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -206,28 +201,31 @@ public partial class _MatrizDetalhes : System.Web.UI.Page
            GridView1.Columns[15].HeaderText = "";
            GridView1.Columns[16].HeaderText = "";
            GridView1.Columns[17].HeaderText = "";
-
+           
            e.Row.Cells[15].CssClass = "ocultar";
            e.Row.Cells[16].CssClass = "ocultar";
            e.Row.Cells[17].CssClass = "ocultar";
 
         // ################################################//
 
-           e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(GridView1, "Select$" + e.Row.RowIndex);
-           e.Row.ToolTip = "Clique para selecionar está linha.";
+           //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(GridView1, "Select$" + e.Row.RowIndex);
+           //e.Row.ToolTip = "Clique para selecionar está linha.";
 
          }
 
     }
     protected void Button1_Click(object sender, EventArgs e)
     {
+        AppMailTest();
         
-        
-        ExportGridToPDF();
     }
     protected void Button2_Click(object sender, EventArgs e)
     {
         Response.Redirect("primo.aspx");
+    }
+    protected void LinxDashNoc0_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
+    {
+
     }
     protected void TextBox1_TextChanged(object sender, EventArgs e)
     {
@@ -369,7 +367,6 @@ public partial class _MatrizDetalhes : System.Web.UI.Page
 
         return resultado;
     }
-
     protected string recuperaInfoJupiter(string tp, string tipo)
     {
             string resultado = " ";
@@ -463,21 +460,21 @@ public partial class _MatrizDetalhes : System.Web.UI.Page
     }
     protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
     {
-        foreach (GridViewRow row in GridView1.Rows)
-        {
-            if (row.RowIndex == GridView1.SelectedIndex)
-            {
-                row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
-                row.ToolTip = string.Empty;
- 
-            }
-            else
-            {
-                row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
-                row.ToolTip = "Clique para selecionar está linha.";
-            }
-           
-        }
+        //foreach (GridViewRow row in GridView1.Rows)
+        //{
+        //    if (row.RowIndex == GridView1.SelectedIndex)
+        //    {
+        //        row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
+        //        row.ToolTip = string.Empty;
+
+        //    }
+        //    else
+        //    {
+        //        row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
+        //        row.ToolTip = "Clique para selecionar está linha.";
+        //    }
+
+        //}
        
     }
     private string GridViewToHtml(GridView gv)
@@ -488,8 +485,29 @@ public partial class _MatrizDetalhes : System.Web.UI.Page
         gv.RenderControl(hw);
         return sb.ToString();
     }
-    private void ExportGridToPDF()
+    private void porEmail()
     {
+        string to = "noc@linx.com.br";
+        string From = "yuri.farias@linx.com.br";
+        string subject = "Alerta LinxDash";
+        string Body = "Prezado ,<br> Por gentileza, verifique arquivo em anexo <br><br>";
+        Body += GridViewToHtml(GridView1); // Melhorar essa função
+        Body += "<br><br>Regards,<br>Anukana";
+        bool send = envia_email(to, From, subject, Body);// Melhorar essa função
+        if(send == true)
+        {
+            string CloseWindow = "alert('Email enviado com sucesso!');";
+            ClientScript.RegisterStartupScript(this.GetType(), "CloseWindow", CloseWindow, true);
+        }
+        else
+        {
+            string CloseWindow = "alert('Problema para enviar e-mail..Tente novamente em breve!');";
+            ClientScript.RegisterStartupScript(this.GetType(), "CloseWindow", CloseWindow, true);
+        }
+        
+    }
+    private void ExportGridToPDF()
+   {
 
         Response.ContentType = "application/pdf";
         Response.AddHeader("content-disposition", "attachment;filename=Teste.pdf");
@@ -510,14 +528,42 @@ public partial class _MatrizDetalhes : System.Web.UI.Page
 
   
     }  
+    private void AppMailTest()
+     {
+
+        
+         StringWriter sw = new StringWriter();
+         HtmlTextWriter hw = new HtmlTextWriter(sw);
+         GridView1.RenderControl(hw);
+         StringReader sr = new StringReader(sw.ToString());
+         HyperLink1.NavigateUrl = "mailto:etc@email.com?body= <html><body><br><h1> testando formatãção HTML</h1> </body></html> <br><br><br>"; // Não interessante formatação outlook abre como texto plano
+
+      
+     }
+    public bool envia_email(string para, string de, string assunto, string body)
+    {
+        MailMessage msg = new MailMessage(de, para);
+        msg.Subject = assunto;
+        AlternateView view;
+        SmtpClient client;
+        StringBuilder msgText = new StringBuilder();
+        msgText.Append(" <html><body><br></body></html> <br><br><br>  " + body);
+        view = AlternateView.CreateAlternateViewFromString(msgText.ToString(), null, "text/html");
+
+        msg.AlternateViews.Add(view);
+        client = new SmtpClient();
+        client.Host = "smtp.office365.com";
+        client.Port = 995;
+        client.Credentials = new System.Net.NetworkCredential("yuri.farias@linx.com.br", "010203da,");
+        client.EnableSsl = true; //outlook works on Server Secured Layer
+        client.Send(msg);
+        bool k = true;
+        return k;
+    }
     public override void VerifyRenderingInServerForm(System.Web.UI.Control control)
     {
-        //required to avoid the runtime error "  
-        //Control 'GridView1' of type 'GridView' must be placed inside a form tag with runat=server."  
-    }  
-    protected void LinxDashNoc0_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
-    {
-
+        /* Confirms that an HtmlForm control is rendered for the
+        /* specified ASP.NET server control at run time. */
     }
 
 }

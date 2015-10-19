@@ -27,6 +27,133 @@
 <head runat="server">
     <title>Matriz - Versão: 3.0.0</title>
 
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.js"></script>
+        <script type="text/javascript" src="scripts/jquery.zclip.js"></script>
+        <script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#copy-button").zclip({
+
+            path: "scripts/ZeroClipboard.swf",
+
+            copy: function () { return $('#TextBox1').val(); },
+            beforeCopy: function () { },
+
+            afterCopy: function () {
+
+                alert('Copiado para area de transferencia : \n' + $('#TextBox1').val());
+
+            }
+
+        });
+
+    });
+
+</script>    <script>
+
+         function expandir(name)
+         {
+             var div = document.getElementById(name)
+             var img = document.getElementById('img' + name);
+             if (div.style.display == 'none')
+             {
+                 div.style.display = "inline";
+                 img.src = "img/minus.gif";
+           
+             }
+             else {
+                 div.style.display = "none";
+                 img.src = "img/plus.gif";
+                  
+             }
+           
+         }
+         function CopyGridViewOriginal() {
+             var div = document.getElementById('divGridView');
+             div.contentEditable = 'true';
+             var controlRange;
+             if (document.body.createControlRange) {
+                 controlRange = document.body.createControlRange();
+                 controlRange.addElement(div);
+                 controlRange.execCommand('Copy');
+             }
+             div.contentEditable = 'false';
+         }
+
+    </script>
+    <style type="text/css">
+    .auto-style2 {
+            width: 77px;
+        }
+    .auto-style3 {
+            width: 93%;
+        }
+    .oculto
+        {
+         display:none;
+        }
+    .Centraliza
+        {
+            text-align: center;
+            display: ruby-text-container;
+            overflow:inherit;
+            list-style:outside;
+            width:90%;
+            top:90%;
+           
+                     
+         }
+    .row-highlight
+    {
+        background-color: Yellow;
+    }
+    .row-select
+    {
+        background-color: red;
+    }
+    .auto-resize
+        {
+            height: 100%;
+            width: 100%;
+            left: 50%;
+            right: 50%;
+            top: 100%;
+        }
+    .btn {
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+    .btn:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+            .ocultar{
+            display:none;
+        }
+        .trimmer
+   {
+     height:100px;
+    text-overflow: ellipsis;
+    text-align: centeMatriz - Versão: 3.0.0</title>
+
      <script>
  
          function expandir(name)
@@ -135,7 +262,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
+    <div id="divGridView">
     
     <div>
     
@@ -333,13 +460,13 @@ div.WordSection1
 
                 </td>
 
+                          <asp:HyperLink ID="HyperLink1" runat="server">HyperLink</asp:HyperLink>
 
         <table align="center" class="auto-resize">
             <tr>
                 <td class="auto-style2">
     
         <asp:Button ID="Button1" runat="server" OnClick="Button2_Click" Text="Voltar" Width="120px" />
- 
                 </td>
                 <td class="auto-style3">
     
@@ -359,6 +486,7 @@ div.WordSection1
             Font-Names="Arial Narrow" DataKeyNames ="nPivotActiveMonitorTypeToDeviceID,nActiveMonitorStateChangeLogID,nActiveMonitorTypeID" CssClass="auto-resize">
 
             <AlternatingRowStyle CssClass="AlternativeRowStyle" BackColor="White" ForeColor="#284775" />
+             
             <Columns>
                 <asp:TemplateField>
                     <ItemTemplate>
@@ -458,8 +586,7 @@ div.WordSection1
                     </ItemTemplate>
                     
                 </asp:TemplateField>
-                
-
+               
             </Columns>
             <EditRowStyle BackColor="#999999" />
             <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
@@ -471,6 +598,7 @@ div.WordSection1
             <SortedAscendingHeaderStyle BackColor="#506C8C" />
             <SortedDescendingCellStyle BackColor="#FFFDF8" />
             <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
+    
         </asp:GridView>
 
                 </td>
@@ -478,7 +606,10 @@ div.WordSection1
         </table>
     
     </div>
- 
+ <div>
+     <a id="copy-button" > Copiar </a>
+
+ </div>
     </form>
 </body>
 </html>

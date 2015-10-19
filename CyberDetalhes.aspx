@@ -340,7 +340,6 @@ div.WordSection1
                 <asp:BoundField DataField="dLastInternalStateTime" HeaderText="Início" SortExpression="Inicio" />
                 <asp:TemplateField HeaderText="Tarefa Programada">
                 <ItemTemplate>
-                       
                         <asp:Label ID="ExibiTP" runat="server" CssClass="trimmer" Text= '<%#Eval("sResult") %>'> </asp:Label> <br />
                         <asp:TextBox ID="TextBox1" OnTextChanged="TextBox1_TextChanged"  AutoPostBack="true" Width="100px" runat="server"></asp:TextBox>
                 </ItemTemplate>

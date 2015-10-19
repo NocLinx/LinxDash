@@ -172,7 +172,7 @@ public partial class CyberDetalhes : System.Web.UI.Page
             DataCadastroTP.ToolTip = "Data em que a TP foi aberta no sistema (Visual Linx / WorkFlow Web)";
             DiasTP.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "DiasTP");
             DiasTP.ToolTip = "Total em dias que a TP foi aberta";
-            ProdutoFootPrint.Text =   e.Row.Cells[16].Text.ToString();
+            ProdutoFootPrint.Text =   e.Row.Cells[17].Text.ToString();
             ProdutoFootPrint.ToolTip = "Produto_FootPrint";
             Recurso.Text = recuperaInfoJupiter(DisplayText.Text.ToString(), "ContatoRecurso");
             mostraTP.Text = DisplayText.Text;
