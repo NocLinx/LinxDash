@@ -157,7 +157,7 @@ public partial class _primo : System.Web.UI.Page
                 }
                 else if (tempoDown >= 180)// Verifica escalonamento N3
                 {
-                    e.Row.Cells[3].CssClass = "blink";
+                    e.Row.Cells[3].CssClass = "blink"; 
                     if (VerificaEscalonamento(camaradinha.ToString(), "3", DataAlerta) && VerificaEscalonamento(camaradinha.ToString(), "2", DataAlerta) && VerificaEscalonamento(camaradinha.ToString(), "1", DataAlerta)) // Se for verdadeiro quer dizer que o operador ja escalonou
                         e.Row.Cells[3].CssClass = "bgPreto";
 
@@ -214,6 +214,15 @@ public partial class _primo : System.Web.UI.Page
                 HeaderCell.CssClass = "HeaderGrid";
                 HeaderCell.Attributes.Add("OnClick", "window.location.href = 'Detalhes.aspx?Matriz';"); // Usar uma página apenas e passar paremetros da consulta
                 MatrizGrid.Controls[0].Controls.AddAt(0, HeaderGridRow); // Futuramente trocar pela referencia da grid que estiver chamando a função ou não
+            }
+            else if (HeaderGrid.ClientID.ToString() == "FiliaisGrid")
+            {
+                HeaderCell.Text = "Filiais";
+                HeaderCell.ColumnSpan = 4;
+                HeaderGridRow.Cells.Add(HeaderCell);
+                HeaderCell.CssClass = "HeaderGrid";
+                HeaderCell.Attributes.Add("OnClick", "window.location.href = 'Detalhes.aspx?Filiais';");
+                FiliaisGrid.Controls[0].Controls.AddAt(0, HeaderGridRow);
             }
             else if (HeaderGrid.ClientID.ToString() == "SaasGrid")
             {
@@ -281,6 +290,7 @@ public partial class _primo : System.Web.UI.Page
         int SQLCyber = 4;
         int SQLTic = 5;
         int SQLPoa = 6;
+        int SQLFiliais = 7;
 
 
         if (setTimerByUser.SelectedItem.Value == "1 Hora")
@@ -292,6 +302,7 @@ public partial class _primo : System.Web.UI.Page
             this.Cyber.SelectCommand = SelectCommand("< 119", SQLCyber);
             this.Telecom.SelectCommand = SelectCommand("< 119", SQLTic);
             this.POA.SelectCommand = SelectCommand("< 119", SQLPoa);
+            this.Filiais.SelectCommand = SelectCommand("< 119", SQLFiliais);
 
             try
             {
@@ -301,6 +312,7 @@ public partial class _primo : System.Web.UI.Page
                 CyberGrid.DataBind();
                 TicGrid.DataBind();
                 PoaGrid.DataBind();
+                Filiais.DataBind();
 
             }
             catch (System.Data.SqlClient.SqlException ex) //Detecta SqlException
@@ -321,7 +333,7 @@ public partial class _primo : System.Web.UI.Page
             this.Cyber.SelectCommand = SelectCommand("< 179", SQLCyber);
             this.Telecom.SelectCommand = SelectCommand("< 179", SQLTic);
             this.POA.SelectCommand = SelectCommand("< 179", SQLPoa);
-
+            this.Filiais.SelectCommand = SelectCommand("< 179", SQLFiliais);
             try
             {
                 MatrizGrid.DataBind();
@@ -330,7 +342,7 @@ public partial class _primo : System.Web.UI.Page
                 CyberGrid.DataBind();
                 TicGrid.DataBind();
                 PoaGrid.DataBind();
-
+                Filiais.DataBind();
             }
             catch (System.Data.SqlClient.SqlException ex)  
             {
@@ -350,7 +362,7 @@ public partial class _primo : System.Web.UI.Page
             this.Cyber.SelectCommand = SelectCommand("< 239", SQLCyber);
             this.Telecom.SelectCommand = SelectCommand("< 239", SQLTic);
             this.POA.SelectCommand = SelectCommand("< 239", SQLPoa);
-
+            this.Filiais.SelectCommand = SelectCommand("< 239", SQLFiliais);
             try
             {
                 MatrizGrid.DataBind();
@@ -359,6 +371,8 @@ public partial class _primo : System.Web.UI.Page
                 CyberGrid.DataBind();
                 TicGrid.DataBind();
                 PoaGrid.DataBind();
+                Filiais.DataBind();
+
 
             }
             catch (System.Data.SqlClient.SqlException ex)  
@@ -379,7 +393,7 @@ public partial class _primo : System.Web.UI.Page
             this.Cyber.SelectCommand = SelectCommand("< 299", SQLCyber);
             this.Telecom.SelectCommand = SelectCommand("< 299", SQLTic);
             this.POA.SelectCommand = SelectCommand("< 299", SQLPoa);
-
+            this.Filiais.SelectCommand = SelectCommand("< 299", SQLFiliais);
             try
             {
                 MatrizGrid.DataBind();
@@ -388,6 +402,8 @@ public partial class _primo : System.Web.UI.Page
                 CyberGrid.DataBind();
                 TicGrid.DataBind();
                 PoaGrid.DataBind();
+                Filiais.DataBind();
+
 
             }
             catch (System.Data.SqlClient.SqlException ex)  
@@ -408,7 +424,7 @@ public partial class _primo : System.Web.UI.Page
             this.Cyber.SelectCommand = SelectCommand("> 2", SQLCyber);
             this.Telecom.SelectCommand = SelectCommand("> 2", SQLTic);
             this.POA.SelectCommand = SelectCommand("> 2", SQLPoa);
-
+            this.Filiais.SelectCommand = SelectCommand("> 2", SQLFiliais);
             try
             {
                 MatrizGrid.DataBind();
@@ -417,6 +433,8 @@ public partial class _primo : System.Web.UI.Page
                 CyberGrid.DataBind();
                 TicGrid.DataBind();
                 PoaGrid.DataBind();
+                Filiais.DataBind();
+
 
             }
 
@@ -437,7 +455,7 @@ public partial class _primo : System.Web.UI.Page
             this.Cyber.SelectCommand = SelectCommand("> 2", SQLCyber);
             this.Telecom.SelectCommand = SelectCommand("> 2", SQLTic);
             this.POA.SelectCommand = SelectCommand("> 2", SQLPoa);
-
+            this.Filiais.SelectCommand = SelectCommand(" > 2", SQLFiliais);
             try
             {
                 MatrizGrid.DataBind();
@@ -446,6 +464,8 @@ public partial class _primo : System.Web.UI.Page
                 CyberGrid.DataBind();
                 TicGrid.DataBind();
                 PoaGrid.DataBind();
+                Filiais.DataBind();
+
 
             }
             catch (System.Data.SqlClient.SqlException ex)  
@@ -470,6 +490,7 @@ public partial class _primo : System.Web.UI.Page
         int SQLCyber = 4;
         int SQLTic = 5;
         int SQLPoa = 6;
+        int SQLFiliais = 7;
          */
         String retorno = null;
         // Querie original antes de tentar ordenar pelo tempo está na raiz "Queries" - Alias não esquecer de tirar dessa pasta também
@@ -488,7 +509,7 @@ public partial class _primo : System.Web.UI.Page
                 ", ActiveMonitorStateChangeLog.sResult " +
                 ", MonitorState.nInternalMonitorState " +
                 ", MonitorState.nInternalStateTime " +
-                ", ActiveMonitorStateChangeLog.nActiveMonitorStateChangeLogID " +
+                ", PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
 
 
            "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK)  " +
@@ -513,7 +534,7 @@ public partial class _primo : System.Web.UI.Page
                           "AND (PivotActiveMonitorTypeToDevice.bRemoved = 0)  " +
                           "AND (PivotActiveMonitorTypeToDevice.bDisabled = 0)  " +
                           "AND (ActiveMonitorType.bRemoved = 0)  " +
-                          "AND (nInternalStateTime  " + where + " )  " +
+                          "AND (datediff(MI, dLastInternalStateTime, getdate())  " + where + ")  " +
                           "AND (MonitorState.nInternalMonitorState = 1)  " +
                           "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID)  " +
                           "AND (  " +
@@ -533,6 +554,67 @@ public partial class _primo : System.Web.UI.Page
     "ORDER BY  inicio desc";
             retorno = comando;
         }
+
+        else if (quem == 7)
+        {
+            String comando = "SELECT sDisplayname,  COUNT (sDisplayName)as total, MIN(nInternalStateTime) as tempoDown, MAX(dLastInternalStateTime) as inicio " +
+                "FROM (" +
+"SELECT DISTINCT DeviceAttribute.sName " +
+                ", DeviceAttribute.sValue " +
+                ", Device.sDisplayName " +
+                ", NetworkInterface.sNetworkAddress " +
+                ", ActiveMonitorType.sMonitorTypeName " +
+                ", PivotActiveMonitorTypeToDevice.sComment " +
+                ", PivotActiveMonitorTypeToDevice.dLastInternalStateTime " +
+                ", ActiveMonitorStateChangeLog.sResult " +
+                ", MonitorState.nInternalMonitorState " +
+                ", MonitorState.nInternalStateTime " +
+                ", PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
+
+
+           "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK)  " +
+                          "INNER JOIN PivotActiveMonitorTypeToDevice  " +
+                          "ON ActiveMonitorStateChangeLog.nPivotActiveMonitorTypeToDeviceID = PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID  " +
+                          "INNER JOIN MonitorState WITH (NOLOCK)  " +
+                          "ON PivotActiveMonitorTypeToDevice.nMonitorStateID = MonitorState.nMonitorStateID  " +
+                          "INNER JOIN Device WITH (NOLOCK)   " +
+                          "ON PivotActiveMonitorTypeToDevice.nDeviceID = Device.nDeviceID  " +
+                          "INNER JOIN ActiveMonitorType WITH (NOLOCK)  " +
+                          "ON PivotActiveMonitorTypeToDevice.nActiveMonitorTypeID = ActiveMonitorType.nActiveMonitorTypeID  " +
+                          "INNER JOIN PivotDeviceToGroup WITH (NOLOCK)  " +
+                          "ON Device.nDeviceID = PivotDeviceToGroup.nDeviceID  " +
+                          "INNER JOIN DeviceGroup WITH (NOLOCK)  " +
+                          "ON PivotDeviceToGroup.nDeviceGroupID = DeviceGroup.nDeviceGroupID  " +
+                          "LEFT OUTER JOIN DeviceAttribute WITH (NOLOCK)  " +
+                          "ON Device.nDeviceID = DeviceAttribute.nDeviceID  " +
+                          "INNER JOIN NetworkInterface WITH (NOLOCK)  " +
+                          "ON Device.nDeviceID = NetworkInterface.nDeviceID  " +
+           "WHERE          	(ActiveMonitorStateChangeLog.dEndTime IS NULL)  " +
+                          "AND (Device.bRemoved = 0)  " +
+                          "AND (PivotActiveMonitorTypeToDevice.bRemoved = 0)  " +
+                          "AND (PivotActiveMonitorTypeToDevice.bDisabled = 0)  " +
+                          "AND (ActiveMonitorType.bRemoved = 0)  " +
+                          "AND (datediff(MI, dLastInternalStateTime, getdate())  " + where + ")  " +
+                          "AND (MonitorState.nInternalMonitorState = 1)  " +
+                          "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID)  " +
+                          "AND (  " +
+                                "  DeviceAttribute.sName = N'Prioridade'  " +
+                               "OR DeviceAttribute.sName = N'Acionamento'  " +
+                               "OR DeviceAttribute.sName = N'DC'  " +
+                               "OR DeviceAttribute.sName = N'WUG'  " +
+                               "OR DeviceAttribute.sName = N'Produto_Footprint'  " +
+                               "OR DeviceAttribute.sName = N'KBOPM'  " +
+                               ")  " +
+                          ") AS a  " +
+           "PIVOT (  " +
+                   "max(sValue)  " +
+                  "FOR sName IN ([Prioridade], [Acionamento], [Produto_Footprint], [DC], [WUG], [KBOPM]) " +
+                 ") AS pvt  " +
+"group by sDisplayName " +
+    "ORDER BY  inicio desc";
+            retorno = comando;
+        }
+
         else if (quem == 2)
         {
 
@@ -548,7 +630,7 @@ public partial class _primo : System.Web.UI.Page
                 ", ActiveMonitorStateChangeLog.sResult " +
                 ", MonitorState.nInternalMonitorState " +
                 ", MonitorState.nInternalStateTime " +
-                ", ActiveMonitorStateChangeLog.nActiveMonitorStateChangeLogID " +
+                ", PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
 
 
            "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK)  " +
@@ -575,7 +657,7 @@ public partial class _primo : System.Web.UI.Page
                           "AND (ActiveMonitorType.bRemoved = 0)  " +
                           "AND (sDisplayName NOT LIKE '%DataSync%Processamento%')  " +
                           "AND (sDisplayName NOT LIKE 'ETL%')  " +
-                          "AND (nInternalStateTime  " + where + " )  " +
+                          "AND (datediff(MI, dLastInternalStateTime, getdate())  " + where + ")  " +
                           "AND (MonitorState.nInternalMonitorState = 1)  " +
                           "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID)  " +
                           "AND (  " +
@@ -611,7 +693,7 @@ public partial class _primo : System.Web.UI.Page
                 ", ActiveMonitorStateChangeLog.sResult " +
                 ", MonitorState.nInternalMonitorState " +
                 ", MonitorState.nInternalStateTime " +
-                ", ActiveMonitorStateChangeLog.nActiveMonitorStateChangeLogID " +
+                ", PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
 
 
            "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK)  " +
@@ -636,7 +718,7 @@ public partial class _primo : System.Web.UI.Page
                           "AND (PivotActiveMonitorTypeToDevice.bRemoved = 0)  " +
                           "AND (PivotActiveMonitorTypeToDevice.bDisabled = 0)  " +
                           "AND (ActiveMonitorType.bRemoved = 0)  " +
-                          "AND (nInternalStateTime  " + where + " )  " +
+                          "AND (datediff(MI, dLastInternalStateTime, getdate())  " + where + ")  " +
                           "AND (MonitorState.nInternalMonitorState = 1)  " +
                           "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID)  " +
                           "AND (  " +
@@ -671,7 +753,7 @@ public partial class _primo : System.Web.UI.Page
                 ", ActiveMonitorStateChangeLog.sResult " +
                 ", MonitorState.nInternalMonitorState " +
                 ", MonitorState.nInternalStateTime " +
-                ", ActiveMonitorStateChangeLog.nActiveMonitorStateChangeLogID " +
+                ", PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
 
 
            "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK)  " +
@@ -696,7 +778,7 @@ public partial class _primo : System.Web.UI.Page
                           "AND (PivotActiveMonitorTypeToDevice.bRemoved = 0)  " +
                           "AND (PivotActiveMonitorTypeToDevice.bDisabled = 0)  " +
                           "AND (ActiveMonitorType.bRemoved = 0)  " +
-                          "AND (nInternalStateTime  " + where + " )  " +
+                          "AND (datediff(MI, dLastInternalStateTime, getdate())  " + where + ")  " +
                           "AND (MonitorState.nInternalMonitorState = 1)  " +
                           "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID)  " +
                           "AND (  " +
@@ -730,7 +812,7 @@ public partial class _primo : System.Web.UI.Page
                 ", ActiveMonitorStateChangeLog.sResult " +
                 ", MonitorState.nInternalMonitorState " +
                 ", MonitorState.nInternalStateTime " +
-                ", ActiveMonitorStateChangeLog.nActiveMonitorStateChangeLogID " +
+                ", PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
 
 
            "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK)  " +
@@ -755,7 +837,7 @@ public partial class _primo : System.Web.UI.Page
                           "AND (PivotActiveMonitorTypeToDevice.bRemoved = 0)  " +
                           "AND (PivotActiveMonitorTypeToDevice.bDisabled = 0)  " +
                           "AND (ActiveMonitorType.bRemoved = 0)  " +
-                          "AND (nInternalStateTime  " + where + " )  " +
+                          "AND (datediff(MI, dLastInternalStateTime, getdate())  " + where + ")  " +
                           "AND (MonitorState.nInternalMonitorState = 1)  " +
                           "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID)  " +
                           "AND (  " +
@@ -790,7 +872,7 @@ public partial class _primo : System.Web.UI.Page
                 ", ActiveMonitorStateChangeLog.sResult " +
                 ", MonitorState.nInternalMonitorState " +
                 ", MonitorState.nInternalStateTime " +
-                ", ActiveMonitorStateChangeLog.nActiveMonitorStateChangeLogID " +
+                ", PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
 
 
            "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK)  " +
@@ -815,7 +897,7 @@ public partial class _primo : System.Web.UI.Page
                           "AND (PivotActiveMonitorTypeToDevice.bRemoved = 0)  " +
                           "AND (PivotActiveMonitorTypeToDevice.bDisabled = 0)  " +
                           "AND (ActiveMonitorType.bRemoved = 0)  " +
-                          "AND (nInternalStateTime  " + where + " )  " +
+                          "AND (datediff(MI, dLastInternalStateTime, getdate())  " + where + ")  " +
                           "AND (MonitorState.nInternalMonitorState = 1)  " +
                           "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID)  " +
                           "AND (  " +
@@ -921,6 +1003,82 @@ public partial class _primo : System.Web.UI.Page
                         }
 
              }
+
+        if (DB == "FiliaisGrid")
+        {
+            String comando = "SELECT nInternalStateTime " +
+                    "FROM (" +
+                    "SELECT DISTINCT DeviceAttribute.sName," +
+                    "DeviceAttribute.sValue," +
+                    "Device.sDisplayName," +
+                    "NetworkInterface.sNetworkAddress," +
+                    "DeviceGroup.sGroupName," +
+                    "DeviceGroup.nParentGroupID, " +
+                    "ActiveMonitorType.sMonitorTypeName," +
+                    "PivotActiveMonitorTypeToDevice.sComment," +
+                    "MonitorState.nInternalStateTime," +
+                    "PivotActiveMonitorTypeToDevice.dLastInternalStateTime," +
+                    "ActiveMonitorStateChangeLog.sResult, " +
+                    "MonitorState.nInternalMonitorState " +
+
+                "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK) " +
+                    "INNER JOIN PivotActiveMonitorTypeToDevice " +
+                    "ON ActiveMonitorStateChangeLog.nPivotActiveMonitorTypeToDeviceID = PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
+                    "INNER JOIN MonitorState WITH (NOLOCK) " +
+                    "ON PivotActiveMonitorTypeToDevice.nMonitorStateID = MonitorState.nMonitorStateID " +
+                    "INNER JOIN Device WITH (NOLOCK) " +
+                    "ON PivotActiveMonitorTypeToDevice.nDeviceID = Device.nDeviceID " +
+                    "INNER JOIN ActiveMonitorType WITH (NOLOCK) " +
+                    "ON PivotActiveMonitorTypeToDevice.nActiveMonitorTypeID = ActiveMonitorType.nActiveMonitorTypeID " +
+                    "INNER JOIN PivotDeviceToGroup WITH (NOLOCK) " +
+                    "ON Device.nDeviceID = PivotDeviceToGroup.nDeviceID " +
+                    "INNER JOIN DeviceGroup WITH (NOLOCK) " +
+                    "ON PivotDeviceToGroup.nDeviceGroupID = DeviceGroup.nDeviceGroupID " +
+                    "LEFT OUTER JOIN DeviceAttribute WITH (NOLOCK) " +
+                    "ON Device.nDeviceID = DeviceAttribute.nDeviceID " +
+                    "INNER JOIN NetworkInterface WITH (NOLOCK) " +
+                    "ON Device.nDeviceID = NetworkInterface.nDeviceID " +
+
+                "WHERE   (ActiveMonitorStateChangeLog.dEndTime IS NULL) " +
+                    "AND (Device.bRemoved = 0) " +
+                    "AND (sGroupName NOT LIKE '%Discovery%') " +
+                    "AND (sDisplayName = '" + NomeDevice + "') " +
+                    "AND (nInternalStateTime > 2) " +
+                    "AND (PivotActiveMonitorTypeToDevice.bRemoved = 0) " +
+                    "AND (PivotActiveMonitorTypeToDevice.bDisabled = 0) " +
+                    "AND (ActiveMonitorType.bRemoved = 0) " +
+                    "AND (ActiveMonitorType.bRemoved = 0) " +
+                    "AND (MonitorState.nInternalMonitorState = 1) " +
+                    "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID) " +
+                    "AND ( " +
+                         "DeviceAttribute.sName = N'Prioridade' " +
+                         "OR DeviceAttribute.sName = N'Acionamento' " +
+                         "OR DeviceAttribute.sName = N'DC' " +
+                         "OR DeviceAttribute.sName = N'WUG' " +
+                         "OR DeviceAttribute.sName = N'KBOPM' " +
+                         "OR DeviceAttribute.sName = N'KBOPP' " +
+                         "OR DeviceAttribute.sName = N'Excecao' " +
+                         ") " +
+                ") AS a " +
+
+                "PIVOT ( " +
+                "max(sValue) " +
+                "FOR sName IN ([Prioridade], [Acionamento], [DASH_Diretoria01], [DC], [WUG], [VerSQLTical], [Produto], [KBOPM], [KBOPP], [Excecao]) " +
+                ") AS pvt " +
+                "ORDER BY dLastInternalStateTime DESC";
+
+            this.Filiais2.SelectCommand = comando;
+            DataView test = (DataView)Filiais2.Select(DataSourceSelectArguments.Empty);
+            test = (DataView)Filiais2.Select(DataSourceSelectArguments.Empty);
+
+            int record = test.Count;
+            if (record != 0)  //  OK
+            {
+                Resultado = test[0][0].ToString();
+            }
+
+        }
+
         if (DB == "SaasGrid")
             {
                 String comando = "SELECT nInternalStateTime " +
@@ -1401,6 +1559,97 @@ public partial class _primo : System.Web.UI.Page
                     Resultado = "url('img/prioridades/PN8-5.png')";
                 }
                 
+            }
+
+        }
+
+        if (DB == "FiliaisGrid")
+        {
+            String comando = "SELECT Prioridade, Acionamento " +
+                    "FROM (" +
+                    "SELECT DISTINCT DeviceAttribute.sName," +
+                    "DeviceAttribute.sValue," +
+                    "Device.sDisplayName," +
+                    "NetworkInterface.sNetworkAddress," +
+                    "DeviceGroup.sGroupName," +
+                    "DeviceGroup.nParentGroupID, " +
+                    "ActiveMonitorType.sMonitorTypeName," +
+                    "PivotActiveMonitorTypeToDevice.sComment," +
+                    "MonitorState.nInternalStateTime," +
+                    "PivotActiveMonitorTypeToDevice.dLastInternalStateTime," +
+                    "ActiveMonitorStateChangeLog.sResult, " +
+                    "MonitorState.nInternalMonitorState " +
+
+                "FROM            ActiveMonitorStateChangeLog WITH (NOLOCK) " +
+                    "INNER JOIN PivotActiveMonitorTypeToDevice " +
+                    "ON ActiveMonitorStateChangeLog.nPivotActiveMonitorTypeToDeviceID = PivotActiveMonitorTypeToDevice.nPivotActiveMonitorTypeToDeviceID " +
+                    "INNER JOIN MonitorState WITH (NOLOCK) " +
+                    "ON PivotActiveMonitorTypeToDevice.nMonitorStateID = MonitorState.nMonitorStateID " +
+                    "INNER JOIN Device WITH (NOLOCK) " +
+                    "ON PivotActiveMonitorTypeToDevice.nDeviceID = Device.nDeviceID " +
+                    "INNER JOIN ActiveMonitorType WITH (NOLOCK) " +
+                    "ON PivotActiveMonitorTypeToDevice.nActiveMonitorTypeID = ActiveMonitorType.nActiveMonitorTypeID " +
+                    "INNER JOIN PivotDeviceToGroup WITH (NOLOCK) " +
+                    "ON Device.nDeviceID = PivotDeviceToGroup.nDeviceID " +
+                    "INNER JOIN DeviceGroup WITH (NOLOCK) " +
+                    "ON PivotDeviceToGroup.nDeviceGroupID = DeviceGroup.nDeviceGroupID " +
+                    "LEFT OUTER JOIN DeviceAttribute WITH (NOLOCK) " +
+                    "ON Device.nDeviceID = DeviceAttribute.nDeviceID " +
+                    "INNER JOIN NetworkInterface WITH (NOLOCK) " +
+                    "ON Device.nDeviceID = NetworkInterface.nDeviceID " +
+
+                "WHERE   (ActiveMonitorStateChangeLog.dEndTime IS NULL) " +
+                    "AND (Device.bRemoved = 0) " +
+                    "AND (sGroupName NOT LIKE '%Discovery%') " +
+                    "AND (sDisplayName = '" + NomeDevice + "') " +
+                    "AND (nInternalStateTime > 2) " +
+                    "AND (PivotActiveMonitorTypeToDevice.bRemoved = 0) " +
+                    "AND (PivotActiveMonitorTypeToDevice.bDisabled = 0) " +
+                    "AND (ActiveMonitorType.bRemoved = 0) " +
+                    "AND (ActiveMonitorType.bRemoved = 0) " +
+                    "AND (MonitorState.nInternalMonitorState = 1) " +
+                    "AND (Device.nDefaultNetworkInterfaceID = NetworkInterface.nNetworkInterfaceID) " +
+                    "AND ( " +
+                         "DeviceAttribute.sName = N'Prioridade' " +
+                         "OR DeviceAttribute.sName = N'Acionamento' " +
+                         "OR DeviceAttribute.sName = N'DC' " +
+                         "OR DeviceAttribute.sName = N'WUG' " +
+                         "OR DeviceAttribute.sName = N'KBOPM' " +
+                         "OR DeviceAttribute.sName = N'KBOPP' " +
+                         "OR DeviceAttribute.sName = N'Excecao' " +
+                         ") " +
+                ") AS a " +
+
+                "PIVOT ( " +
+                "max(sValue) " +
+                "FOR sName IN ([Prioridade], [Acionamento], [DASH_Diretoria01], [DC], [WUG], [VerSQLTical], [Produto], [KBOPM], [KBOPP], [Excecao]) " +
+                ") AS pvt " +
+                "ORDER BY dLastInternalStateTime DESC";
+
+            this.Filiais2.SelectCommand = comando;
+            DataView test = (DataView)Filiais2.Select(DataSourceSelectArguments.Empty);
+            test = (DataView)Filiais2.Select(DataSourceSelectArguments.Empty);
+
+            int record = test.Count;
+            if (record != 0)  //  OK
+            {
+                if (test[0][0].ToString() == "1" && test[0][1].ToString() == "24x07")
+                {
+                    Resultado = "url('img/prioridades/AP24-7.png')";
+                }
+                else if (test[0][0].ToString() == "1" && test[0][1].ToString() == "08x05")
+                {
+                    Resultado = "url('img/prioridades/AP8-5.png')";
+                }
+                else if (test[0][0].ToString() == "2" && test[0][1].ToString() == "24x07")
+                {
+                    Resultado = "url('img/prioridades/PN24-7.png')";
+                }
+                else if (test[0][0].ToString() == "2" && test[0][1].ToString() == "08x05")
+                {
+                    Resultado = "url('img/prioridades/PN8-5.png')";
+                }
+
             }
 
         }
@@ -1886,16 +2135,19 @@ public partial class _primo : System.Web.UI.Page
          * Anuncia que deve ser efetuado o escalonamento no alerta. Até que o operador marque o Checkbox de escalonamento
          */
 
+            
+
         bool resultado = false;
-        string comando = "select top 1 * from tp where nomeDevice = '" + Nome + "' " +
-                         "AND DataAlerta = '" + Inicio +"' " +
-                         "order by nTP desc";
+        string comando = "set dateformat dmy " +
+                         "select top 1 * from Alertas where nomeDevice = '" + Nome + "' " +
+                         "AND Inicio = '" + Inicio +"' " +
+                         "order by TP desc";
         LinxDashNoc.SelectCommand = comando;
         DataView test = (DataView)LinxDashNoc.Select(DataSourceSelectArguments.Empty);
         int record = test.Count;
         if (record != 0 && Nivel == "1")  // NV1; 
         {
-            if (test[0][13].ToString() == "True")
+            if (test[0][8].ToString() == "True")
                 resultado = true;
 
             else
@@ -1904,7 +2156,7 @@ public partial class _primo : System.Web.UI.Page
         }
         else if (record != 0 && Nivel == "2")
         {
-            if (test[0][14].ToString() == "True")
+            if (test[0][9].ToString() == "True")
                 resultado = true;
 
             else
@@ -1912,7 +2164,7 @@ public partial class _primo : System.Web.UI.Page
         }
         else if (record != 0 && Nivel == "3")
         {
-            if (test[0][15].ToString() == "True")
+            if (test[0][10].ToString() == "True")
                 resultado = true;
 
             else
